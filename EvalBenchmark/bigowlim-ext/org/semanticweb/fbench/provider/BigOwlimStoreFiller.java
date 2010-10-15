@@ -1,4 +1,4 @@
-package com.fluidops.iwb.benchmark.provider;
+package org.semanticweb.fbench.provider;
 
 import java.io.File;
 import java.util.Iterator;
