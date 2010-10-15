@@ -8,9 +8,9 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.impl.URIImpl;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.sail.SailRepository;
+import org.semanticweb.fbench.misc.BigOWLimFileHandler;
+import org.semanticweb.fbench.misc.FileUtil;
 
-import com.fluidops.iwb.benchmark.misc.BigOWLimFileHandler;
-import com.fluidops.iwb.benchmark.misc.FileUtil;
 import com.ontotext.trree.OwlimSchemaRepository;
 
 
