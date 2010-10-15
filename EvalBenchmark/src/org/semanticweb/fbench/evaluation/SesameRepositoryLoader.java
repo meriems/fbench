@@ -88,13 +88,17 @@ public class SesameRepositoryLoader {
 			}
 			if (repType.equals(new LiteralImpl("SingleBigOWLim"))){
 				long datasetLoadStart = System.currentTimeMillis();
-				Class<?> bigOwlimClass = Class.forName("");
-//				SingleBigOWLimRepository rep = new SingleBigOWLimRepository();
-//				SailRepository res = rep.load(graph, repNode);
+				RepositoryProvider rep;
+				try {
+					Class<?> bigOwlimClass = Class.forName("org.semanticweb.fbench.provider.SingleBigOWLimRepository");
+					rep = (RepositoryProvider)bigOwlimClass.newInstance();
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException("ClassNotFoundException 'org.semanticweb.fbench.provider.SingleBigOWLimRepository': probably fbench-bigowlim-ext.jar is missing on the classpath. See documentation for further information." );
+				}
+				SailRepository res = (SailRepository)rep.load(graph, repNode);
 				long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
-//				report.reportDatasetLoadTime(repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
-//				return res;
-				return null;
+				report.reportDatasetLoadTime(repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
+				return res;
 			}
 			
 			// load the respective repository into the federation
@@ -114,10 +118,20 @@ public class SesameRepositoryLoader {
 			repProvider = new NativeStoreFiller();
 		}
 		else if (repType.equals(new LiteralImpl("BigOWLim"))){
-			repProvider = null; //new BigOwlimStoreFiller();
+			try {
+				Class<?> bigOwlimClass = Class.forName("org.semanticweb.fbench.provider.BigOwlimStoreFiller");
+				repProvider = (RepositoryProvider)bigOwlimClass.newInstance();
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("ClassNotFoundException 'org.semanticweb.fbench.provider.BigOwlimStoreFiller': probably fbench-bigowlim-ext.jar is missing on the classpath. See documentation for further information." );
+			}
 		}
 		else if (repType.equals(new LiteralImpl("BigOWLimRepo"))){
-			repProvider = null; //new BigOwlimRepository();
+			try {
+				Class<?> bigOwlimClass = Class.forName("org.semanticweb.fbench.provider.BigOwlimRepository");
+				repProvider = (RepositoryProvider)bigOwlimClass.newInstance();
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("ClassNotFoundException 'org.semanticweb.fbench.provider.BigOwlimRepository': probably fbench-bigowlim-ext.jar is missing on the classpath. See documentation for further information." );
+			}
 		}
 		else if (repType.equals(new LiteralImpl("NativeRepo"))){
 			repProvider = new NativeStoreRepository();
