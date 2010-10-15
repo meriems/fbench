@@ -1,0 +1,214 @@
+#summary Summarized Dataset and Query Description for Benchmark
+
+= Datasets ==
+
+== Life Sciences Domain ==
+
+|| _*Dataset*_ || _*Domain*_ || _*Triples(k)*_ || _*RDF dump*_ || _*SPARQL Endpoint*_ ||
+|| DBpedia (Infoboxes strict) || Generic || 9,700 || [http://downloads.dbpedia.org/3.4/en/newstrictmappingbased_en.nt.bz2 DBpedia Infoboxes] || http://dbpedia.org/sparql ||
+|| DBpedia (Instance types) || Generic || 4,300 || [http://downloads.dbpedia.org/3.4/en/instancetype_en.nt.bz2 DBpedia Instance Types] || http://dbpedia.org/sparql ||
+|| KEGG Compounds || Compounds || 178 || [http://quebec.bio2rdf.org/download/n3/cpd.n3 KEGG Cpd dump] || http://kegg.bio2rdf.org/sparql ||
+|| KEGG Enzymes || Enzymes || 685 || [http://quebec.bio2rdf.org/download/n3/kegg.ec.n3 KEGG Ec dump] || http://kegg.bio2rdf.org/sparql ||
+|| KEGG Drugs || Drugs || 117 || [http://quebec.bio2rdf.org/download/n3/kegg.dr.n3 KEGG Dr dump] || http://kegg.bio2rdf.org/sparql ||
+|| KEGG Reactions || Reactions || 110 || [http://quebec.bio2rdf.org/download/n3/kegg.rn.n3 KEGG Rn dump] || http://kegg.bio2rdf.org/sparql ||
+|| Drugbank || Drugs || 517 || [http://www4.wiwiss.fu-berlin.de/drugbank/drugbank_dump.nt Drugbank dump] || http://www4.wiwiss.fu-berlin.de/drugbank/sparql ||
+|| ChEBI || Compounds || 4,772 || [http://quebec.bio2rdf.org/download/n3/chebi.n3 ChEBI dump] || http://chebi.bio2rdf.org/sparql ||
+
+== Generic Domain ==
+
+|| _*Dataset*_ || _*Domain*_ || _*Triples(k)*_ || _*RDF dump*_ || _*SPARQL Endpoint*_ ||
+|| DBpedia (Infoboxes strict) || Generic || 9,700 || [http://downloads.dbpedia.org/3.4/en/newstrictmappingbased_en.nt.bz2 DBpedia Infoboxes] || http://dbpedia.org/sparql ||
+|| DBpedia (Instance types) || Generic || 4,300 || [http://downloads.dbpedia.org/3.4/en/instancetype_en.nt.bz2 DBpedia Instance Types] || http://dbpedia.org/sparql ||
+|| NY Times People || News about People || 103 || [http://data.nytimes.com/people.rdf NY Times People dump] || http://api.talis.com/stores/nytimes/services/sparql ||
+|| NY Times Organizations || News about Organizations || 60 || [http://data.nytimes.com/organizations.rdf NY Times Organizations dump] || http://api.talis.com/stores/nytimes/services/sparql ||
+|| NY Times Locations || News about Locations || 43 || [http://data.nytimes.com/locations.rdf NY Times Locations dump] || http://api.talis.com/stores/nytimes/services/sparql ||
+|| GeoNames || Geography || 70,000 || [http://download.geonames.org/all-geonames-rdf.zip GeoNames dump] || http://geosparql.appspot.com/query (doesn't support HTTP Post) ||
+|| Jamendo || Music || 1,048 || [http://moustaki.org/resources/jamendo-rdf.tar.gz Jamendo dump] || http://dbtune.org/jamendo/sparql ||
+|| LinkedMDB || Movies || 6,148 || [http://queens.db.toronto.edu/~oktie/linkedmdb/linkedmdb-latest-dump.zip LinkedMDB dump] || http://data.linkedmdb.org/sparql ||
+
+----
+
+= Queries =
+
+== Generic Domain Queries ==
+
+ * *Query 1.1:* Find all information about Barack Obama.
+
+{{{
+SELECT ?predicate ?object WHERE {
+   { dbpedia:Barack_Obama ?predicate ?object }
+  UNION
+   { ?subject owl:sameAs dbpedia:Barack_Obama .
+     ?subject ?predicate ?object } }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fpredicate+%3Fobject+WHERE+{+{+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBarack_Obama%3E+%3Fpredicate+%3Fobject+}+UNION+{++%3Fsubject+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBarack_Obama%3E+.+++%3Fsubject+%3Fpredicate+%3Fobject+}+} Try this Query on our Information Workbench]
+
+ * *Query 1.2:* Return Barack Obama's party membership and news pages.
+
+{{{
+SELECT ?party ?page WHERE {
+   dbpedia:Barack_Obama dbpedia-owl:Person/party ?party .
+   ?x nytimes:topicPage ?page .
+   ?x owl:sameAs dbpedia:Barack_Obama }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fparty+%3Fpage++WHERE+{+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBarack_Obama%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FPerson%2Fparty%3E+%3Fparty+.+%3Fx+%3Chttp%3A%2F%2Fdata.nytimes.com%2Felements%2FtopicPage%3E+%3Fpage+.+%3Fx+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FBarack_Obama%3E+.+} Try this Query on our Information Workbench]
+
+ * *Query 1.3:* Return for all US presidents their party membership and news pages about them.
+
+{{{
+SELECT ?pres ?party ?page WHERE {
+   ?pres rdf:type dbpedia-owl:President .
+   ?pres dbpedia-owl:Person/nationality dbpedia:United_States .
+   ?pres dbpedia-owl:Person/party ?party .
+   ?x nytimes:topicPage ?page .
+   ?x owl:sameAs ?pres }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fpresident+%3Fparty+%3Fpage+WHERE+{+%3Fpresident+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FPresident%3E+.+%3Fpresident+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FPerson%2Fnationality%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FUnited_States%3E+.+%3Fpresident+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FPerson%2Fparty%3E+%3Fparty+.+%3Fx+%3Chttp%3A%2F%2Fdata.nytimes.com%2Felements%2FtopicPage%3E+%3Fpage+.+%3Fx+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Fpresident+.+} Try this Query on our Information Workbench]
+
+ * *Query 1.4:* Find all news about actors starring in a movie with name Tarzan.
+
+{{{
+SELECT ?actor ?news WHERE {
+   ?film purl:title 'Tarzan' .
+   ?film linkedMDB:actor ?actor .
+   ?actor owl:sameAs ?x.
+   ?y owl:sameAs ?x .
+   ?y nytimes:topicPage ?news }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Factor+%3Fnews+WHERE+{+%3Ffilm+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Fterms%2Ftitle%3E+%27Tarzan%27+.+%3Ffilm+%3Chttp%3A%2F%2Fdata.linkedmdb.org%2Fresource%2Fmovie%2Factor%3E+%3Factor+.+%3Factor+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Fx.+%3Fy+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Fx+.+%3Fy+%3Chttp%3A%2F%2Fdata.nytimes.com%2Felements%2FtopicPage%3E+%3Fnews+} Try this Query on our Information Workbench]
+
+ * *Query 1.5:* Find the director and the genre of movies directed by Italians.
+
+{{{
+SELECT ?film ?director ?genre WHERE {
+   ?film dbpedia-owl:Film/director ?director.
+   ?director dbpedia-owl:Person/nationality dbpedia:Italy .
+   ?x owl:sameAs ?film .
+   ?x linkedMDB:genre ?genre }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Ffilm+%3Fdirector+%3Fgenre+WHERE+{+%3Ffilm+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FFilm%2Fdirector%3E+%3Fdirector.+%3Fdirector%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FPerson%2Fnationality%3E+%3Chttp%3A%2F%2Fdbpedia.org%2Fresource%2FItaly%3E++.+%3Fx+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Ffilm+.+%3Fx+%3Chttp%3A%2F%2Fdata.linkedmdb.org%2Fresource%2Fmovie%2Fgenre%3E+%3Fgenre+} Try this Query on our Information Workbench]
+
+ * *Query 1.6:* Find all musical artists based in Germany.
+
+{{{
+SELECT ?name ?location ?news WHERE {
+   ?artist foaf:name ?name .
+   ?artist foaf:based_near ?location .
+   ?location geonames:parentFeature ?germany .
+   ?germany geonames:name 'Federal Republic of Germany' }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fname%3Flocation+%3Fnews++WHERE+{+%3Fartist+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2Fname%3E+%3Fname+.+%3Fartist+%3Chttp%3A%2F%2Fxmlns.com%2Ffoaf%2F0.1%2Fbased_near%3E+%3Flocation+.+%3Flocation+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23parentFeature%3E+%3Fgermany+.+%3Fgermany%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23name%3E+%27Federal+Republic+of+Germany%27+} Try this Query on our Information Workbench]
+
+ * *Query 1.7:* Find all news about locations in the state of California.
+
+{{{
+SELECT ?location ?news WHERE {
+   ?location geonames:parentFeature ?parent .
+   ?parent geonames:name 'California'  .
+   ?y owl:sameAs ?location.
+   ?y nytimes:topicPage ?news }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Flocation+%3Fnews+WHERE+{+%3Flocation+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23parentFeature%3E+%3Fparent+.+%3Fparent+%3Chttp%3A%2F%2Fwww.geonames.org%2Fontology%23name%3E+%27California%27++.+%3Fy+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Flocation.+%3Fy+%3Chttp%3A%2F%2Fdata.nytimes.com%2Felements%2FtopicPage%3E+%3Fnews+} Try this Query on our Information Workbench]
+
+----
+
+== Life Sciences Domain Queries ==
+
+ * *Query 2.1:* Find all drugs from {\tt Drugbank} and {\tt DBpedia} with their melting points.
+
+{{{
+SELECT ?drug ?melt WHERE {
+   { ?drug drugbank:meltingPoint ?melt . }
+  UNION
+   { ?drug dbpedia:meltingPoint ?melt . } }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%24drug+%24melt+WHERE+{+++++{+%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FmeltingPoint%3E+%24melt.+}+++++UNION+++++{+%24drug+%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FDrug%2FmeltingPoint%3E+%24melt+.+}+} Try this Query on our Information Workbench]
+
+ * *Query 2.2:* Find all properties of Caffeine in Drugbank. Find all entities from all available databases describing Caffeine, return the union of all properties of any of these entities.
+
+{{{
+SELECT ?predicate ?object WHERE {
+   { drugbank:DB00201 ?predicate ?object . }
+  UNION
+   { drugbank:DB00201 owl:sameAs ?caff .
+     ?caff ?predicate ?object . } }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fpredicate+%3Fobject+WHERE+{+{+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugs%2FDB00201%3E+%3Fpredicate+%3Fobject+.+}+UNION+{+++%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugs%2FDB00201%3E+%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E+%3Fx+.+++%3Fx+%3Fpredicate+%3Fobject+}+} Try this Query on our Information Workbench]
+
+ * *Query 2.3:* For all drugs in DBpedia, find all drugs they interact with, along with an explanation of the interaction.
+
+{{{
+SELECT ?Drug ?IntDrug ?IntEffect WHERE {
+   ?Drug rdf:type dbpedia-owl:Drug .
+   ?y owl:sameAs ?Drug .
+   ?Int drugbank:interactionDrug1 ?y .
+   ?Int drugbank:interactionDrug2 ?IntDrug .
+   ?Int drugbank:text ?IntEffect . }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%24Drug+%24InteractionDrug+%24InteractionEffect+WHERE+{+%24Drug++++++++++%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E++++++%3Chttp%3A%2F%2Fdbpedia.org%2Fontology%2FDrug%3E.+%24y++++++++++++++%3Chttp%3A%2F%2Fwww.w3.org%2F2002%2F07%2Fowl%23sameAs%3E++++++++++%24Drug.+%24Interaction+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FinteractionDrug1%3E++++%24y%3B+++++++++++++++++++%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FinteractionDrug2%3E+++%24InteractionDrug%3B+++++++++++++++++++%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2Ftext%3E++++++++++++++++++++%24InteractionEffect+} Try this Query on our Information Workbench]
+
+ * *Query 2.4:* Find all the equations of reactions related to drugs from category Cathartics and their drug description.
+
+{{{
+SELECT ?drugDesc ?cpd ?equation WHERE {
+   ?drug drugbank:drugCategory drugbank:cathartics .
+   ?drug drugbank:keggCompoundId ?cpd .
+   ?drug drugbank:description ?drugDesc .
+   ?enzyme kegg:xSubstrate ?cpd .
+   ?enzyme rdf:type kegg:Enzyme .
+   ?reaction kegg:xEnzyme ?enzyme .
+   ?reaction kegg:equation ?equation . }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3FdrugDesc+%3Fequation+WHERE+{+%3Fdrug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FdrugCategory%3E+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugcategory%2Fcathartics%3E+.+%3Fdrug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FkeggCompoundId%3E+%3Fcpd+.+%3Fdrug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2Fdescription%3E+%3FdrugDesc+.+%3Fenzyme+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fkegg%23xSubstrate%3E+%3Fcpd+.+%3Fenzyme+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fkegg%23Enzyme%3E+.+%3Freaction+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fkegg%23xEnzyme%3E+%3Fenzyme+.+%3Freaction+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fkegg%23equation%3E+%3Fequation+.+} Try this Query on our Information Workbench]
+
+ * *Query 2.5:* Find all drugs from Drugbank, together with the URL of the corresponding page stored in KEGG and the URL to the image derived from ChEBI.
+
+{{{
+SELECT ?drug ?keggUrl ?chebiImage WHERE {
+   ?drug rdf:type drugbank:drugs .
+   ?drug drugbank:keggCompoundId ?keggDrug .
+   ?keggDrug kegg:url ?keggUrl .
+   ?drug drugbank:genericName ?drugBankName .
+   ?chebiDrug purl:title ?drugBankName .
+   ?chebiDrug chebi:image ?chebiImage . }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%24drug+%24keggUrl+%24chebiImage+WHERE+{++%24drug+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2Fdrugs%3E+.++%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FkeggCompoundId%3E+%24keggDrug+.++%24keggDrug+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fbio2rdf%23url%3E+%24keggUrl+.++%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FgenericName%3E+%24drugBankName+.++%24chebiDrug+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2Ftitle%3E+%24drugBankName+.++%24chebiDrug+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fbio2rdf%23image%3E+%24chebiImage+.+} Try this Query on our Information Workbench]
+
+ * *Query 2.6:* Find KEGG drug names of all drugs in Drugbank belonging to category Micronutrient.
+
+{{{
+SELECT ?drug ?title WHERE {
+   ?drug drugbank:drugCategory drugbank-owl:micronutrient> .
+   ?drug drugbank:casRegistryNumber ?id .
+   ?keggDrug rdf:type kegg:Drug .
+   ?keggDrug kegg:xRef ?id .
+   ?keggDrug purl:title ?title . }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%3Fdrug+%3Ftitle+WHERE+{+%3Fdrug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FdrugCategory%3E+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugcategory%2Fmicronutrient%3E+.+%3Fdrug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FcasRegistryNumber%3E+%3Fid+.+%3FkeggDrug+%3Chttp%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23type%3E+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fkegg%23Drug%3E+.+%3FkeggDrug+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fbio2rdf%23xRef%3E+%3Fid+.+%3FkeggDrug+%3Chttp%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2Ftitle%3E+%3Ftitle+.+} Try this Query on our Information Workbench]
+
+ * *Query 2.7:* Find all drugs that affect humans and mammals. For those having a description of their biotransformation, also return this description. Show only those whose mass starts with a number larger then 5.
+
+{{{
+SELECT ?drug ?transform ?mass WHERE {
+   ?drug drugbank:affectedOrganism  'Humans and other mammals'.
+   ?drug drugbank:casRegistryNumber ?cas .
+   ?keggDrug kegg:xRef ?cas .
+   ?keggDrug kegg:mass ?mass
+      FILTER ( ?mass > '5' )
+      OPTIONAL { ?drug drugbank:biotransformation ?transform . } }
+}}}
+
+  [http://iwb.fluidops.com/search.jsp?q=SELECT+%24drug+%24transform+%24mass+WHERE+{++{+%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FaffectedOrganism%3E++%27Humans+and+other+mammals%27.++++%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2FcasRegistryNumber%3E+%24cas+.+++++++%24keggDrug+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fbio2rdf%23xRef%3E+%24cas+.++++%24keggDrug+%3Chttp%3A%2F%2Fbio2rdf.org%2Fns%2Fbio2rdf%23mass%3E+%24mass++++FILTER+%28+%24mass+%3E+%275%27+%29++++}++OPTIONAL+{+%24drug+%3Chttp%3A%2F%2Fwww4.wiwiss.fu-berlin.de%2Fdrugbank%2Fresource%2Fdrugbank%2Fbiotransformation%3E+%24transform+.+}+} Try this Query on our Information Workbench]
