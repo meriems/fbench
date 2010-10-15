@@ -2,7 +2,6 @@ package org.semanticweb.fbench.provider;
 
 import java.io.File;
 import java.util.Iterator;
-
 import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -13,9 +12,9 @@ import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
+import org.semanticweb.fbench.misc.BigOWLimFileHandler;
+import org.semanticweb.fbench.misc.FileUtil;
 
-import com.fluidops.iwb.benchmark.misc.BigOWLimFileHandler;
-import com.fluidops.iwb.benchmark.misc.FileUtil;
 import com.ontotext.trree.OwlimSchemaRepository;
 
 /**
