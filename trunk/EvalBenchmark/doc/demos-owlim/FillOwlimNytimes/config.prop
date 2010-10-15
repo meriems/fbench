@@ -32,7 +32,7 @@ querySet = SIMPLE
 #   
 #   see doc/sampleConfig for some configuration possibilities
 #
-dataConfig = doc\\demos\\FillOwlimNytimes\\fillOwlimStore-nytimes.ttl
+dataConfig = doc\\demos-owlim\\FillOwlimNytimes\\fillOwlimStore-nytimes.ttl
 
 ###
 # showResults

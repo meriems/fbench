@@ -32,7 +32,7 @@ querySet = SIMPLE
 #   
 #   see doc/sampleConfig for some configuration possibilities
 #
-dataConfig = doc\\demos\\FillOwlimSingleNytimesDbpedia\\fillOwlimStore-dbpedia-nytimes.ttl
+dataConfig = doc\\demos-owlim\\FillOwlimSingleNytimesDbpedia\\fillOwlimStore-dbpedia-nytimes.ttl
 
 ###
 # showResults

@@ -32,7 +32,7 @@ querySet = SIMPLE
 #   
 #   see doc/sampleConfig for some configuration possibilities
 #
-dataConfig = doc\\demos\\QueryOwlimDbpedia\\demoSingleOwlimRepo.ttl
+dataConfig = doc\\demos-owlim\\QueryOwlimDbpedia\\demoSingleOwlimRepo.ttl
 
 ###
 # showResults
