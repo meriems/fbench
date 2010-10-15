@@ -1,3 +1,3 @@
 @echo off
 cd ..\..\..
-runEval.bat doc\demos\QueryOwlimNytimes\config.prop
+runEval-bigowlim-ext.bat doc\demos-owlim\QueryOwlimNytimes\config.prop
