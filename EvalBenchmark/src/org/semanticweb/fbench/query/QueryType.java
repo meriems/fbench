@@ -10,6 +10,8 @@ public enum QueryType {
 
 	SIMPLE("Simple SPARQL query", "simple"),
 	
+	CROSSDOMAIN("Cross domain queries", "cross-domain"),
+	
 	CUSTOM1("Custom SPARQL query", "custom1");
 	
 	

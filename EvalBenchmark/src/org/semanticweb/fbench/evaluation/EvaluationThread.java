@@ -1,5 +1,6 @@
 package org.semanticweb.fbench.evaluation;
 
+import org.apache.log4j.Logger;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.report.ReportStream;
 
@@ -11,6 +12,8 @@ import org.semanticweb.fbench.report.ReportStream;
  * @author as
  */
 public class EvaluationThread extends Thread {
+	
+	public static Logger log = Logger.getLogger(EvaluationThread.class);
 	
 	protected Evaluation evaluator;
 	protected Query query;
@@ -40,11 +43,19 @@ public class EvaluationThread extends Thread {
 			int numberOfResults = evaluator.runQuery(query);
 			long duration = System.currentTimeMillis() - start;
 			report.endQueryEvaluation(query, run, duration, numberOfResults);
+		} catch (IllegalMonitorStateException e) { 
+			report.endQueryEvaluation(query, run, -1, -1);
+			log.info("Execution of query " + query.getIdentifier() + " resulted in timeout.");
+			return;
 		} catch (Exception e) {
 			report.endQueryEvaluation(query, run, -1, -1);
-			report.error("Error executing query " + query.getIdentifier(), e);
+			log.error("Error executing query " + query.getIdentifier() + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+			log.debug("Exception details:", e);
 		}
 		this.finished = true;
+		synchronized (Evaluation.class) {
+			Evaluation.class.notify();	
+		}
 	}
 
 }

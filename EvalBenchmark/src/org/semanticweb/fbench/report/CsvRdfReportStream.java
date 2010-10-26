@@ -8,64 +8,64 @@ import org.semanticweb.fbench.query.QueryType;
 
 
 /**
- * Combined report stream for simple and cvs reporting. Uses the delegate pattern. 
+ * Combined report stream for rdf and cvs reporting. Uses the delegate pattern. 
  * 
- * @see SimpleReportStream
+ * @see RdfReportStream
  * @see CsvReportStream
  * 
  * @author as
  *
  */
-public class CombinedReportStream implements ReportStream {
+public class CsvRdfReportStream implements ReportStream {
 
 	
-	protected SimpleReportStream simple = new SimpleReportStream();
+	protected RdfReportStream rdf = new RdfReportStream();
 	protected CsvReportStream cvs = new CsvReportStream();
 	
 	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
 			int numberOfQueries, int numberOfRuns) {
 		cvs.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
-		simple.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
+		rdf.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
 	}
 	public void beginQueryEvaluation(Query query, int run) {
 		cvs.beginQueryEvaluation(query, run);
-		simple.beginQueryEvaluation(query, run);
+		rdf.beginQueryEvaluation(query, run);
 	}
 	public void beginRun(int run, int totalNumberOfRuns) {
 		cvs.beginRun(run, totalNumberOfRuns);
-		simple.beginRun(run, totalNumberOfRuns);
+		rdf.beginRun(run, totalNumberOfRuns);
 	}
 	public void close() throws Exception {
 		cvs.close();
-		simple.close();
+		rdf.close();
 	}
 	public void endEvaluation(long duration) {
 		cvs.endEvaluation(duration);
-		simple.endEvaluation(duration);
+		rdf.endEvaluation(duration);
 	}
 	public void endQueryEvaluation(Query query, int run, long duration,
 			int numberOfResults) {
 		cvs.endQueryEvaluation(query, run, duration, numberOfResults);
-		simple.endQueryEvaluation(query, run, duration, numberOfResults);
+		rdf.endQueryEvaluation(query, run, duration, numberOfResults);
 	}
 	public void endRun(int run, int totalNumberOfRuns, long duration) {
 		cvs.endRun(run, totalNumberOfRuns, duration);
-		simple.endRun(run, totalNumberOfRuns, duration);
+		rdf.endRun(run, totalNumberOfRuns, duration);
 	}
 	public void initializationBegin() {
 		cvs.initializationBegin();
-		simple.initializationBegin();
+		rdf.initializationBegin();
 	}
 	public void initializationEnd(long duration) {
 		cvs.initializationEnd(duration);
-		simple.initializationEnd(duration);
+		rdf.initializationEnd(duration);
 	}
 	public void open() throws Exception {
 		cvs.open();
-		simple.open();
+		rdf.open();
 	}
 	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration) {
 		cvs.reportDatasetLoadTime(id, name, location, type, duration);
-		simple.reportDatasetLoadTime(id, name, location, type, duration);
+		rdf.reportDatasetLoadTime(id, name, location, type, duration);
 	}
 }

@@ -2,7 +2,6 @@ package org.semanticweb.fbench.report;
 
 import java.util.List;
 
-import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.query.QueryType;
 
@@ -67,19 +66,6 @@ public class SimpleReportStream implements ReportStream {
 		;		
 	}
 
-
-	
-
-
-	@Override
-	public void error(String errorMsg, Exception ex) {
-		System.out.println("[ERROR] " + errorMsg);
-		System.out.println("\tDetails: " + ex.getMessage());
-		if (Config.getConfig().isDebugMode() && ex!=null)
-			ex.printStackTrace();
-	}
-
-
 	@Override
 	public void initializationBegin() {
 		System.out.println("[INIT] Begin of initialization.");		
@@ -94,8 +80,8 @@ public class SimpleReportStream implements ReportStream {
 
 
 	@Override
-	public void reportDatasetLoadTime(String name, String location, String type, long duration) {
-		System.out.println("[INIT] Added dataset: name=" + name + ", location=" + location + ", type=" + type + ", duration=" + duration + "ms");
+	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration) {
+		System.out.println("[INIT] Added dataset: id=" +id + ", name=" + name + ", location=" + location + ", type=" + type + ", duration=" + duration + "ms");
 	}
 
 }

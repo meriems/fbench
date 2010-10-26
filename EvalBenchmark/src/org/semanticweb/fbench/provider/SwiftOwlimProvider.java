@@ -70,4 +70,12 @@ public class SwiftOwlimProvider implements RepositoryProvider {
 		String repoLocation = s.getObject().stringValue();
 		return fileName + "[repoLocation: " + repoLocation + "]";
 	}
+
+	@Override
+	public String getId(Graph graph, Resource repNode) {
+		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#RepositoryLocation"), null);
+		Statement s = iter.next();
+		String id = new File(s.getObject().stringValue()).getName();
+		return id;
+	}
 }

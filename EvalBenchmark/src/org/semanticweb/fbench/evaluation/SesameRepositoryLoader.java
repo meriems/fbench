@@ -4,6 +4,7 @@ package org.semanticweb.fbench.evaluation;
 import java.io.FileReader;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -33,6 +34,7 @@ import org.semanticweb.fbench.report.ReportStream;
  */
 public class SesameRepositoryLoader {
 
+	public static Logger log = Logger.getLogger(SesameRepositoryLoader.class);
 	
 	public static SailRepository loadRepositories(ReportStream report) throws Exception {
 		Federation fed = new Federation();
@@ -83,7 +85,7 @@ public class SesameRepositoryLoader {
 				SingleNativeRepository rep = new SingleNativeRepository();
 				SailRepository res = rep.load(graph, repNode);
 				long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
-				report.reportDatasetLoadTime(repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
+				report.reportDatasetLoadTime(rep.getId(graph, repNode), repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
 				return res;
 			}
 			if (repType.equals(new LiteralImpl("SingleBigOWLim"))){
@@ -97,7 +99,7 @@ public class SesameRepositoryLoader {
 				}
 				SailRepository res = (SailRepository)rep.load(graph, repNode);
 				long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
-				report.reportDatasetLoadTime(repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
+				report.reportDatasetLoadTime(rep.getId(graph, repNode), repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
 				return res;
 			}
 			
@@ -106,6 +108,7 @@ public class SesameRepositoryLoader {
 			if (rep != null){
 				fed.addMember(rep);
 			}
+			
 		}
 		
 		return new SailRepository(fed);
@@ -150,7 +153,7 @@ public class SesameRepositoryLoader {
 		
 		Repository rep = repProvider.load(graph, repNode);
 		long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
-		report.reportDatasetLoadTime(repNode.stringValue(), repProvider.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
+		report.reportDatasetLoadTime(repProvider.getId(graph, repNode), repNode.stringValue(), repProvider.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
 		
 		return rep;
 	}

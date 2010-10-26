@@ -2,6 +2,7 @@ package org.semanticweb.fbench.evaluation;
 
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
@@ -20,6 +21,8 @@ import org.semanticweb.fbench.query.Query;
  */
 public class SesameEvaluation extends Evaluation {
 
+	public static Logger log = Logger.getLogger(SesameEvaluation.class);
+	
 	protected SailRepository sailRepo;
 	protected SailRepositoryConnection conn;
 	
@@ -35,13 +38,13 @@ public class SesameEvaluation extends Evaluation {
 
 	@Override
 	public void initialize() throws Exception {
-		System.out.println("Performing Sesame Initialization...");
+		log.info("Performing Sesame Initialization...");
 		
 		sailRepo = SesameRepositoryLoader.loadRepositories(report);
 		if (!Config.getConfig().isFill())
 			conn = sailRepo.getConnection();
 		
-		System.out.println("Sesame Repository successfully initialized.");
+		log.info("Sesame Repository successfully initialized.");
 	}
 
 	@Override

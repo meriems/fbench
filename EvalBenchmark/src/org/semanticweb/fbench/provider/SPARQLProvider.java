@@ -48,4 +48,11 @@ public class SPARQLProvider implements RepositoryProvider {
 		return sparqlEndpoint;
 	}
 
+	@Override
+	public String getId(Graph graph, Resource repNode) {
+		String id = repNode.stringValue().replace("http://", "");
+		id = id.replace("/", "_");
+		return "sparql_" + id;
+	}
+
 }

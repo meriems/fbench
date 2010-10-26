@@ -67,4 +67,12 @@ private Repository rep;
 		return fileName;
 	}
 
+	@Override
+	public String getId(Graph graph, Resource repNode) {
+		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#rdfFile"), null);
+		Statement s = iter.next();
+		String id = "mem_" + new File(s.getObject().stringValue()).getName();
+		return id;
+	}
+
 }

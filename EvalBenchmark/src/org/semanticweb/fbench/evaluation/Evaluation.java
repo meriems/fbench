@@ -1,5 +1,6 @@
 package org.semanticweb.fbench.evaluation;
 
+import org.apache.log4j.Logger;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.query.QueryManager;
@@ -18,9 +19,10 @@ import org.semanticweb.fbench.report.ReportStream;
  */
 public abstract class Evaluation {
 
+	public static Logger log = Logger.getLogger(Evaluation.class);
 	
 	protected ReportStream report;
-	
+	protected Object monitor;
 	
 	public Evaluation() {
 		
@@ -33,8 +35,8 @@ public abstract class Evaluation {
 			report = (ReportStream)Class.forName(Config.getConfig().getReportStream()).newInstance();
 			report.open();
 		} catch (Exception e) {
-			// TODO use logging
-			System.out.println("Error while configuring the report output stream [" + Config.getConfig().getReportStream() + "]: " + e.getMessage());
+			log.error("Error while configuring the report output stream [" + Config.getConfig().getReportStream() + "]: " + e.getMessage());
+			log.debug("Exception details:", e);
 			report.close();
 			System.exit(1);
 		}
@@ -47,13 +49,15 @@ public abstract class Evaluation {
 			long initializationDuration = System.currentTimeMillis() - initializationStart;
 			report.initializationEnd(initializationDuration);
 		} catch (Exception e) {
-			report.error("Error during initialization in " + this.getClass().getCanonicalName(), e);
+			log.error("Error during initialization in " + this.getClass().getCanonicalName() + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+			log.debug("Exception details:", e);
 			report.close();
 			System.exit(1);
 		}
 		
 		if (Config.getConfig().isFill()) {
-			System.out.println("Fill mode activated. No query evalutation. Done.");
+			log.info("Fill mode activated. No query evalutation. Done.");
+			report.endEvaluation(0);
 			report.close();
 			System.exit(0);
 		}
@@ -79,7 +83,8 @@ public abstract class Evaluation {
 		try {
 			finish();
 		} catch (Exception e) {
-			report.error("Error during clean up in " + this.getClass().getCanonicalName(), e);
+			log.error("Error during clean up in " + this.getClass().getCanonicalName() + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+			log.debug("Exception details:", e);
 		}
 		
 		report.close();
@@ -89,13 +94,14 @@ public abstract class Evaluation {
 	
 	protected void runEval() {
 		
-		System.out.println("Evaluation of queries in debug mode (one run per query)...");
+		log.info("Evaluation of queries in debug mode (one run per query)...");
 		boolean showResult = Config.getConfig().isShowResults();
 		report.beginEvaluation(Config.getConfig().getDataConfig(), Config.getConfig().getQuerySet(), QueryManager.getQueryManager().getQueries().size(), 1);
 		long evalStart = System.currentTimeMillis();
 		
 		for (Query q : QueryManager.getQueryManager().getQueries()) {
 			try {
+				log.info("Executing query " + q.getIdentifier() + ", run 1");
 				report.beginQueryEvaluation(q, 1);
 				long start = System.currentTimeMillis();
 				int numberOfResults = runQueryDebug(q, showResult);
@@ -103,19 +109,20 @@ public abstract class Evaluation {
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
 			} catch (Exception e) {
 				report.endQueryEvaluation(q, 1, -1, -1);
-				report.error("Error executing query " + q.getIdentifier(), e);
+				log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+				log.debug("Exception details:", e);
 			}
 		}
 		
 		long overallDuration = System.currentTimeMillis() - evalStart;
 		
 		report.endEvaluation(overallDuration);
-		System.out.println("Evaluation of queries done. Overall duration: " + overallDuration + "ms");
+		log.info("Evaluation of queries done. Overall duration: " + overallDuration + "ms");
 	}
 	
 	
 	protected void runMultiEval() {
-		System.out.println("Evaluation of queries in multiple runs...");
+		log.info("Evaluation of queries in multiple runs...");
 		
 		int evalRuns = Config.getConfig().getEvalRuns();
 		report.beginEvaluation(Config.getConfig().getDataConfig(), Config.getConfig().getQuerySet(), QueryManager.getQueryManager().getQueries().size(), evalRuns);
@@ -126,6 +133,7 @@ public abstract class Evaluation {
 			long runStart = System.currentTimeMillis();
 			for (Query q : QueryManager.getQueryManager().getQueries()){
 				try {
+					log.info("Executing query " + q.getIdentifier() + ", run " + run);
 					report.beginQueryEvaluation(q, run);
 					long start = System.currentTimeMillis();
 					int numberOfResults = runQuery(q);
@@ -133,7 +141,8 @@ public abstract class Evaluation {
 					report.endQueryEvaluation(q, run, duration, numberOfResults);
 				} catch (Exception e) {
 					report.endQueryEvaluation(q, run, -1, -1);
-					report.error("Error executing query " + q.getIdentifier(), e);
+					log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+					log.debug("Exception details:", e);
 				}
 			}
 			long runDuration = System.currentTimeMillis() - runStart;
@@ -143,17 +152,19 @@ public abstract class Evaluation {
 		long overallDuration = System.currentTimeMillis() - evalStart;
 		
 		report.endEvaluation(overallDuration);
-		System.out.println("Evaluation of queries done.");
+		log.info("Evaluation of queries done.");
 	}
 	
 	
 	
 	protected synchronized void runMultiEvalTimeout() {
 		
-		System.out.println("Evaluation of queries in multiple runs (using timeouts) ...");
+		log.info("Evaluation of queries in multiple runs (using timeouts) ...");
 		
 		int evalRuns = Config.getConfig().getEvalRuns();
 		long timeout = Config.getConfig().getTimeout();
+		
+		monitor = new Object();
 		
 		report.beginEvaluation(Config.getConfig().getDataConfig(), Config.getConfig().getQuerySet(), QueryManager.getQueryManager().getQueries().size(), evalRuns);
 		long evalStart = System.currentTimeMillis();
@@ -163,13 +174,21 @@ public abstract class Evaluation {
 			long runStart = System.currentTimeMillis();
 			for (Query q : QueryManager.getQueryManager().getQueries()) {
 				try {
+					log.info("Executing query " + q.getIdentifier() + ", run " + run);
 					EvaluationThread eval = new EvaluationThread(this, q, report, run);
 					eval.start();
-					wait(timeout);
+					
+					synchronized (Evaluation.class) {
+						Evaluation.class.wait(timeout);
+					}
+					
 					eval.stop();	// TODO check if this is really safe in this scenario, we have shared objects
-					if (!eval.isFinished())
+					if (!eval.isFinished()) {
+						log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 						report.endQueryEvaluation(q, run, -1, -1);
+					}
 				} catch (InterruptedException e) {
+					log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 					report.endQueryEvaluation(q, run, -1, -1);
 				}
 			}
@@ -180,7 +199,7 @@ public abstract class Evaluation {
 		long overallDuration = System.currentTimeMillis() - evalStart;
 		
 		report.endEvaluation(overallDuration);
-		System.out.println("Evaluation of queries done.");			
+		log.info("Evaluation of queries done.");			
 	}
 	
 	
