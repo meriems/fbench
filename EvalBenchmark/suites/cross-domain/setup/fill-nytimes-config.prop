@@ -1,0 +1,4 @@
+dataConfig = suites\\cross-domain\\setup\\fill-nytimes.ttl
+
+fill = true
+

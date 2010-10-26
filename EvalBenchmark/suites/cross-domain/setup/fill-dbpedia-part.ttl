@@ -1,0 +1,8 @@
+@prefix fluid: <http://fluidops.org/config#>.
+
+<http://DBpedia.Properties> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.dbpedia351";
+fluid:rdfFile "data\\rdf\\dbpedia351\\mapingbased_properties_en_chunked_cleaned\\";
+fluid:context <http://DBpedia.org>.
+
+
