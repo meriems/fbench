@@ -20,11 +20,12 @@
 #   ALL -> all datasets
 #   SIMPLE -> queries/simple
 #   CUSTOM -> queries/custom
+#   CROSSDOMAIN -> queries/cross-domain
 #
 #	query sets can be combinated using comma as separator
 #	default: ALL
 #
-querySet = ALL
+querySet = SIMPLE
 
 ###
 # dataConfig
@@ -33,6 +34,8 @@ querySet = ALL
 #   see doc/sampleConfig for some configuration possibilities
 #
 dataConfig = config\\demoFederatedSparql.ttl
+
+
 
 ###
 # showResults
@@ -84,13 +87,24 @@ timeout = 0
 #
 #   available default implementations (pckg: org.semanticweb.fbench.report)
 #     - SimplePrintStream -> print to stdout
-#     - CvsReportStream -> print result and load times into csv files
+#     - CsvReportStream -> print result and load times into csv files
 #     - CombinedReportStream -> combination of the above Streams
-#
+#	  - RdfReportStream -> generates RDF triples in N3 syntax
+#	  - CsvRdfReportStream -> RDF + CSV report
+#     
 #   Default values:
 #     - in debug mode: SimplePrintStream
-#     - otherwise: CvsReportStream
-reportStream = org.semanticweb.fbench.report.CombinedReportStream
+#     - otherwise: CsvRdfReportStream
+#reportStream = org.semanticweb.fbench.report.CombinedReportStream
+reportStream = org.semanticweb.fbench.report.CsvRdfReportStream
+
+
+###
+# envConfig
+#	location of the environment properties used in RdfReportStream
+#
+#   default: config\\env.prop
+envConfig = config\\env.prop
 
 
 ###
