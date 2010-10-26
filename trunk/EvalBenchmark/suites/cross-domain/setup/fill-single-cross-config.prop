@@ -1,0 +1,4 @@
+dataConfig = suites\\cross-domain\\setup\\fill-single-cross.ttl
+
+fill = true
+

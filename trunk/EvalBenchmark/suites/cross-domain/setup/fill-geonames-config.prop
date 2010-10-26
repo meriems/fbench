@@ -1,0 +1,6 @@
+dataConfig = suites\\cross-domain\\setup\\fill-geonames.ttl
+
+envConfig = suites\\cross-domain\\env.prop
+
+fill = true
+

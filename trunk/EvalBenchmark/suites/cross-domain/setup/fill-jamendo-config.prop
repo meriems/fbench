@@ -1,0 +1,6 @@
+dataConfig = suites\\cross-domain\\setup\\fill-jamendo.ttl
+
+envConfig = suites\\cross-domain\\env.prop
+
+fill = true
+

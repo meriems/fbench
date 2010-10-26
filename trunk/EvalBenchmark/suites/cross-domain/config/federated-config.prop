@@ -1,0 +1,10 @@
+dataConfig = suites\\cross-domain\\config\\federated.ttl
+
+querySet = CROSSDOMAIN
+
+evalRuns = 5
+
+timeout = 30000
+
+fill = false
+

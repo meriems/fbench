@@ -1,0 +1,13 @@
+@prefix fluid: <http://fluidops.org/config#>.
+
+<http://DBpedia> fluid:store "NativeRepo";
+fluid:RepositoryLocation "data\\repositories\\native-storage.dbpedia351".
+
+<http://NYTimes> fluid:store "NativeRepo";
+fluid:RepositoryLocation "data\\repositories\\native-storage.nytimes".
+
+<http://LinkedMDB> fluid:store "NativeRepo";
+fluid:RepositoryLocation "data\\repositories\\native-storage.linkedmdb".
+
+<http://Jamendo> fluid:store "NativeRepo";
+fluid:RepositoryLocation "data\\repositories\\native-storage.jamendo".
