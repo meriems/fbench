@@ -97,10 +97,15 @@ public class BigOwlimStoreFiller implements RepositoryProvider {
 		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#rdfFile"), null);
 		Statement s = iter.next();
 		String fileName = s.getObject().stringValue();
-		iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#RepositoryLocation"), null);
-		s = iter.next();
-		String repoLocation = s.getObject().stringValue();
-		return fileName + " [repo: " + repoLocation + "]";
+		return fileName;
+	}
+
+	@Override
+	public String getId(Graph graph, Resource repNode) {
+		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#RepositoryLocation"), null);
+		Statement s = iter.next();
+		String id = new File(s.getObject().stringValue()).getName();
+		return id;
 	}
 
 }

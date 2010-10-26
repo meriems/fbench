@@ -1,5 +1,6 @@
 package org.semanticweb.fbench.provider;
 
+import java.io.File;
 import java.util.Iterator;
 
 import org.openrdf.model.Graph;
@@ -60,5 +61,13 @@ public class SingleBigOWLimRepository implements RepositoryProvider {
 		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#RepositoryLocation"), null);
 		Statement s = iter.next();
 		return s.getObject().stringValue();		// the repo location
+	}
+
+	@Override
+	public String getId(Graph graph, Resource repNode) {
+		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#RepositoryLocation"), null);
+		Statement s = iter.next();
+		String id = new File(s.getObject().stringValue()).getName();
+		return id;
 	}
 }
