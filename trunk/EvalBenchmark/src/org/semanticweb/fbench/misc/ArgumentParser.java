@@ -32,6 +32,8 @@ public class ArgumentParser {
 		for (int i=0; i<args.length; i++) {
 			if (args[i].equals("-fill"))
 				res.add(new Property("fill", "true"));
+			else if (args[i].equals("-setup"))
+				res.add(new Property("setup", "true"));
 			else
 				res.add(new Property("configFile", args[i]));
 		}

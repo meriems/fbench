@@ -14,4 +14,6 @@ public interface RepositoryProvider {
 	public Repository load(Graph graph, Resource repNode) throws Exception;
 	
 	public String getLocation(Graph graph, Resource repNode);
+	
+	public String getId(Graph graph, Resource repNode);
 }

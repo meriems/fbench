@@ -19,20 +19,20 @@ import org.semanticweb.fbench.query.QueryType;
  * 
  * <code>
  * eval: run;query-id;dataConfig;queryTime;results;
- * loadTimes: name;location;type;duration;
+ * loadTimes: id;name;location;type;duration;
  * </code>
  * 
  * @author as
  *
  */
-public class CvsReportStream implements ReportStream {
+public class CsvReportStream implements ReportStream {
 
 	
 	private String dataConfig;
 	private BufferedWriter evalOut;
 	private BufferedWriter loadOut;
 	
-	public CvsReportStream() {
+	public CsvReportStream() {
 		;
 	}
 	
@@ -75,12 +75,6 @@ public class CvsReportStream implements ReportStream {
 	}
 
 	@Override
-	public void error(String errorMsg, Exception ex) {
-		System.out.println("[ERROR] " + errorMsg);
-		ex.printStackTrace();		
-	}
-
-	@Override
 	public void open() throws Exception {
 		
 		// evaluation file
@@ -90,7 +84,7 @@ public class CvsReportStream implements ReportStream {
 		
 		String file2 = Config.getConfig().getBaseDir() + "result\\loadTimes.csv"; 
 		loadOut = new BufferedWriter( new FileWriter(file2));
-		loadOut.append("name;location;type;duration;\n");
+		loadOut.append("id;name;location;type;duration;\n");
 	}
 
 	@Override
@@ -112,10 +106,11 @@ public class CvsReportStream implements ReportStream {
 	}
 
 	@Override
-	public void reportDatasetLoadTime(String name, String location, String type, long duration) {
+	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration) {
 		try {
-			// name;type;duration;
-			loadOut.append(name+";"+location+";"+type+";"+duration+";\n");
+			// id;name;location;type;duration;
+			loadOut.append(id+";"+name+";"+location+";"+type+";"+duration+";\n");
+			loadOut.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("IOError: " + e.getMessage(), e);
 		}	

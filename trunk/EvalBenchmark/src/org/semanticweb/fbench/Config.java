@@ -11,7 +11,8 @@ import java.util.Properties;
 import org.semanticweb.fbench.evaluation.SesameEvaluation;
 import org.semanticweb.fbench.misc.ArgumentParser;
 import org.semanticweb.fbench.query.QueryType;
-import org.semanticweb.fbench.report.CvsReportStream;
+import org.semanticweb.fbench.report.CsvRdfReportStream;
+import org.semanticweb.fbench.report.RdfReportStream;
 import org.semanticweb.fbench.report.SimpleReportStream;
 
 
@@ -46,6 +47,14 @@ public class Config {
 	}
 	
 	public static void initialize(String[] args) throws FileNotFoundException, IOException, IllegalArgumentException {
+		
+		if (System.getProperty("log4j.configuration")==null)
+			System.setProperty("log4j.configuration", "file:config\\log4j.properties");
+		
+		// necessary for RDFXML format, e.g. for Jamendo dataset, to not abort with RDFParseException
+		if (System.getProperty("entityExpansionLimit")==null)
+			System.setProperty("entityExpansionLimit", "10000000");
+		
 		instance = new Config();
 		
 		for (Property p : ArgumentParser.parseArguments(args))
@@ -131,12 +140,20 @@ public class Config {
 	
 	/**
 	 * @return
-	 * 		true, if fill mode is enabled (commandline arg "-fill", i.e. not queries are executed)
+	 * 		true, if fill mode is enabled (commandline arg "-fill", i.e. no queries are executed)
 	 */
 	public boolean isFill() {
 		return Boolean.parseBoolean( props.getProperty("fill", "false"));
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * 		true, if setup mode is enabled (commandline arg "-setup", i.e. no queries are executed)
+	 */
+	public boolean isSetup() {
+		return Boolean.parseBoolean( props.getProperty("setup", "false"));
+	}
 	
 	/**
 	 * @return
@@ -160,13 +177,13 @@ public class Config {
 	 * 
 	 * default: 
 	 * 	 a) com.fluidops.iwb.benchmark.report.SimpleReportStream (if debug mode is on)
-	 *   b) com.fluidops.iwb.benchmark.report.CvsReportStream (otherwise)
+	 *   b) com.fluidops.iwb.benchmark.report.CsvRdfReportStream (otherwise)
 	 * 
 	 * @return
 	 * 		the reportStream setting, i.e. the fully qualified class that shall be used for reporting
 	 */
 	public String getReportStream() {
-		String def = isDebugMode() ? SimpleReportStream.class.getCanonicalName() : CvsReportStream.class.getCanonicalName();	// TODO
+		String def = isDebugMode() ? SimpleReportStream.class.getCanonicalName() : CsvRdfReportStream.class.getCanonicalName();	// TODO
 		return props.getProperty("reportStream", def);
 	}
 	
@@ -206,4 +223,13 @@ public class Config {
 		return props.getProperty("evaluationClass", SesameEvaluation.class.getCanonicalName());
 	}
 	
+	/**
+	 * 
+	 * @return
+	 * 		the envConfig setting, i.e. the location of the environment properties that are used in {@link RdfReportStream}
+	 * 		default: config\\env.prop
+	 */
+	public String getEnvConfig()  {
+		return props.getProperty("envConfig", "config\\env.prop");
+	}
 }

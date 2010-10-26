@@ -107,8 +107,10 @@ public interface ReportStream {
 	/**
 	 * called to report a dataset that is being loaded, can be used to report load times during init.
 	 * 
+	 * @param id
+	 * 			a unique identifier for this dataset
 	 * @param name
-	 * 			the data set identifier
+	 * 			the data set name
 	 * @param location
 	 * 			the locations used in the dataset
 	 * @param type
@@ -116,7 +118,7 @@ public interface ReportStream {
 	 * @param duration
 	 * 			the load time in ms
 	 */
-	public void reportDatasetLoadTime(String name, String location, String type, long duration);
+	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration);
 	
 	
 	/**
@@ -127,13 +129,5 @@ public interface ReportStream {
 	 */
 	public void initializationEnd(long duration);
 	
-	/**
-	 * function is called in case of errors
-	 * 
-	 * @param errorMsg
-	 * 			the error message
-	 * @param ex
-	 * 			the exception (if any) or null
-	 */
-	public void error(String errorMsg, Exception ex);
+
 }
