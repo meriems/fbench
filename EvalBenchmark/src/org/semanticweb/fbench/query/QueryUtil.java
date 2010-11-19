@@ -27,7 +27,7 @@ public class QueryUtil {
 	 * 		the location of the query configuration for the specified type
 	 */
 	public static String getQueryLocation(QueryType queryType) {
-		return Config.getConfig().getBaseDir() + "config\\queries\\" + queryType.getFileName();
+		return Config.getConfig().getBaseDir() + "config/queries/" + queryType.getFileName();
 	}
 	
 	

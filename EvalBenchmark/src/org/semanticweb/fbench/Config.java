@@ -49,7 +49,7 @@ public class Config {
 	public static void initialize(String[] args) throws FileNotFoundException, IOException, IllegalArgumentException {
 		
 		if (System.getProperty("log4j.configuration")==null)
-			System.setProperty("log4j.configuration", "file:config\\log4j.properties");
+			System.setProperty("log4j.configuration", "file:config/log4j.properties");
 		
 		// necessary for RDFXML format, e.g. for Jamendo dataset, to not abort with RDFParseException
 		if (System.getProperty("entityExpansionLimit")==null)
@@ -60,7 +60,7 @@ public class Config {
 		for (Property p : ArgumentParser.parseArguments(args))
 			instance.addProperty(p.key, p.value);
 		
-		instance.init(instance.getProperty("configFile", "config\\config.prop"));
+		instance.init(instance.getProperty("configFile", "config/config.prop"));
 		
 	}
 	
@@ -227,9 +227,9 @@ public class Config {
 	 * 
 	 * @return
 	 * 		the envConfig setting, i.e. the location of the environment properties that are used in {@link RdfReportStream}
-	 * 		default: config\\env.prop
+	 * 		default: config/env.prop
 	 */
 	public String getEnvConfig()  {
-		return props.getProperty("envConfig", "config\\env.prop");
+		return props.getProperty("envConfig", "config/env.prop");
 	}
 }
