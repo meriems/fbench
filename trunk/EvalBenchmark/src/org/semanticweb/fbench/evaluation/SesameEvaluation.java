@@ -1,7 +1,5 @@
 package org.semanticweb.fbench.evaluation;
 
-import java.util.Iterator;
-
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
 import org.openrdf.query.QueryLanguage;
@@ -54,11 +52,8 @@ public class SesameEvaluation extends Evaluation {
 		int resCounter = 0;
 		while(res.hasNext()){
 			BindingSet bindings = res.next();
-			Iterator<String> stringIter = bindings.getBindingNames().iterator();
-			while (stringIter.hasNext()){
-				stringIter.next();
-			}
 			resCounter++;
+			earlyResults.handleResult(bindings, resCounter);			
 		}
 		return resCounter;
 	}
@@ -70,18 +65,13 @@ public class SesameEvaluation extends Evaluation {
 		int resCounter = 0;
 		while(res.hasNext()){
 			BindingSet bindings = res.next();
-			Iterator<String> stringIter = bindings.getBindingNames().iterator();
-			String result = "";
-			while (stringIter.hasNext()){
-				String tmp = stringIter.next();
-				result = tmp + ": " + bindings.getValue(tmp) + " | " + result;
-			}
 			if (showResult){
 				// TODO use logging
-				System.out.println(result);
+				System.out.println(bindings);
 			}
 			
 			resCounter++;
+			earlyResults.handleResult(bindings, resCounter);	
 		}
 		return resCounter;
 	}

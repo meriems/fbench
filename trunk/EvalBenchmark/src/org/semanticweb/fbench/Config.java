@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.semanticweb.fbench.evaluation.SesameEvaluation;
 import org.semanticweb.fbench.misc.ArgumentParser;
 import org.semanticweb.fbench.query.QueryType;
 import org.semanticweb.fbench.report.CsvRdfReportStream;
+import org.semanticweb.fbench.report.NoOpEarlyResultsMonitor;
 import org.semanticweb.fbench.report.RdfReportStream;
 import org.semanticweb.fbench.report.SimpleReportStream;
 
@@ -217,10 +217,21 @@ public class Config {
 	 * 
 	 * @return
 	 * 		the evaluationClass setting, i.e. the fully qualified class that shall be used for evaluation
-	 * 		default: com.fluidops.iwb.benchmark.evaluation.SesameEvaluation, see {@link SesameEvaluation}
+	 * 		default: org.semanticweb.fbench.evaluation.SesameEvaluation, see {@link SesameEvaluation}
 	 */
 	public String getEvaluationClass() {
 		return props.getProperty("evaluationClass", SesameEvaluation.class.getCanonicalName());
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 * 		the class that shall be used for early results monitoring.
+	 * 		default: org.semanticweb.fbench.report.NoOpEarlyResultsMonitor
+	 */
+	public String getEarlyResultsMonitorClass() {
+		return props.getProperty("earlyResultsMonitorClass", NoOpEarlyResultsMonitor.class.getCanonicalName());
 	}
 	
 	/**
