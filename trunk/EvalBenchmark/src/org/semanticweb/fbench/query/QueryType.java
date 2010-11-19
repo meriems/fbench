@@ -12,6 +12,8 @@ public enum QueryType {
 	
 	CROSSDOMAIN("Cross domain queries", "cross-domain"),
 	
+	LIFESCIENCEDOMAIN("Life science domain queries", "lifescience-domain"),
+	
 	CUSTOM1("Custom SPARQL query", "custom1");
 	
 	
