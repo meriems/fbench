@@ -19,7 +19,7 @@
 #   the querySet for this evaluation, i.e. 
 #   ALL -> all datasets
 #   SIMPLE -> queries/simple
-#   CUSTOM -> queries/custom
+#   CUSTOM1 -> queries/custom
 #   CROSSDOMAIN -> queries/cross-domain
 #
 #	query sets can be combinated using comma as separator
@@ -116,3 +116,14 @@ envConfig = config\\env.prop
 #
 #   Currently an implementation for Sesame is available (=default)
 evaluationClass = org.semanticweb.fbench.evaluation.SesameEvaluation
+
+
+###
+# earlyResultsMonitorClass
+#	the fully qualified class name of the EarlyResultsMonitor to be used.
+#
+# 	EarlyResultsMonitor is an interface that can be used to measure the 
+#	performance of early results.
+#
+#	Default: org.semanticweb.fbench.report.NoOpEarlyResultsMonitor
+# earlyResultsMonitorClass = org.semanticweb.fbench.report.PrintEarlyResultsMonitor

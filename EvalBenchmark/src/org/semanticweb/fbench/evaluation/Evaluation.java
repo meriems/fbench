@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.query.QueryManager;
+import org.semanticweb.fbench.report.EarlyResultsMonitor;
 import org.semanticweb.fbench.report.ReportStream;
 
 
@@ -11,7 +12,7 @@ import org.semanticweb.fbench.report.ReportStream;
 /**
  * Base class for the actual evaluation runtime. <p>
  * 
- * Can be configured dynamicall using "evaluationClass" property. 
+ * Can be configured dynamically using "evaluationClass" property. 
  * 
  * @see SesameEvaluation
  * @author as
@@ -23,12 +24,23 @@ public abstract class Evaluation {
 	
 	protected ReportStream report;
 	protected Object monitor;
+	protected EarlyResultsMonitor earlyResults;
 	
 	public Evaluation() {
 		
 	}
 	
+		
 	public final void run() throws Exception  {
+		
+		// initialize the early results monitor
+		try {
+			earlyResults = (EarlyResultsMonitor)Class.forName(Config.getConfig().getEarlyResultsMonitorClass()).newInstance();
+		} catch (Exception e) {
+			log.error("Error while configuring early results monitor. Check your earlyResultsMonitorClass setting. [" + Config.getConfig().getReportStream() + "]: " + e.getMessage());
+			log.debug("Exception details:", e);
+			System.exit(1);
+		} 
 		
 		// intialize the report stream, default is SimpleReportStream
 		try {
@@ -104,8 +116,10 @@ public abstract class Evaluation {
 				log.info("Executing query " + q.getIdentifier() + ", run 1");
 				report.beginQueryEvaluation(q, 1);
 				long start = System.currentTimeMillis();
+				earlyResults.nextQuery(q, start);
 				int numberOfResults = runQueryDebug(q, showResult);
 				long duration = System.currentTimeMillis() - start;
+				earlyResults.queryDone();
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
 			} catch (Exception e) {
 				report.endQueryEvaluation(q, 1, -1, -1);
@@ -136,8 +150,10 @@ public abstract class Evaluation {
 					log.info("Executing query " + q.getIdentifier() + ", run " + run);
 					report.beginQueryEvaluation(q, run);
 					long start = System.currentTimeMillis();
+					earlyResults.nextQuery(q, start);
 					int numberOfResults = runQuery(q);
 					long duration = System.currentTimeMillis() - start;
+					earlyResults.queryDone();
 					report.endQueryEvaluation(q, run, duration, numberOfResults);
 				} catch (Exception e) {
 					report.endQueryEvaluation(q, run, -1, -1);
@@ -175,7 +191,7 @@ public abstract class Evaluation {
 			for (Query q : QueryManager.getQueryManager().getQueries()) {
 				try {
 					log.info("Executing query " + q.getIdentifier() + ", run " + run);
-					EvaluationThread eval = new EvaluationThread(this, q, report, run);
+					EvaluationThread eval = new EvaluationThread(this, q, report, earlyResults, run);
 					eval.start();
 					
 					synchronized (Evaluation.class) {
@@ -191,6 +207,7 @@ public abstract class Evaluation {
 					log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 					report.endQueryEvaluation(q, run, -1, -1);
 				}
+				earlyResults.queryDone();
 			}
 			long runDuration = System.currentTimeMillis() - runStart;
 			report.endRun(run, evalRuns, runDuration);
@@ -202,7 +219,7 @@ public abstract class Evaluation {
 		log.info("Evaluation of queries done.");			
 	}
 	
-	
+		
 	/**
 	 * Perform any initializations here, i.e. load repositories, open streams, etc.
 	 * 
