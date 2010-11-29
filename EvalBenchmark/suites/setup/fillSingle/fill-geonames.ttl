@@ -1,0 +1,7 @@
+@prefix fluid: <http://fluidops.org/config#>.
+
+<http://Geonames> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.geonames";
+fluid:rdfFile "data\\rdf\\geonames\\";
+fluid:dataReader "org.semanticweb.fbench.provider.GeonamesDataReader";
+fluid:context <http://Geonames.org>.
