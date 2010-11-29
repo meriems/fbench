@@ -65,6 +65,19 @@ import org.semanticweb.fbench.misc.FileUtil;
  * fluid:context <http://Geonames.org>.
  * </code>
  * 
+ * Specialized readers might be necessary for certain data formats. These can be
+ * specified using the dataReader property. An example is given below. The property
+ * must be set to a fully qualified class name of a DataReader implementation. Note
+ * that this class must be on the classpath at runtime.
+ * 
+ * <code>
+ * <http://Geonames> fluid:store "Native";
+ * fluid:RepositoryLocation "data\\repositories\\native-storage.geonames";
+ * fluid:rdfFile "data\\rdf\\geonames\\all-geonames-rdf.txt";
+ * fluid:dataReader "RDF/XML";
+ * fluid:context <http://Geonames.org>.
+ * </code>
+ * 
  * @author (mz), as
  *
  */
@@ -97,16 +110,26 @@ public class NativeStoreFiller implements RepositoryProvider {
 		
 		RDFFormat rdfFormat = getSpecifiedRdfFormat(graph, repNode);	// can still be null if not specified
 		
+		URI contextURI = ValueFactoryImpl.getInstance().createURI(context);
+    	
 		try {
+			DataReader dataReader = hasCustomReader(graph, repNode);		// can be null
+			
+			long beforeTriples = conn.size();
+			
 			if (rdfFile.isDirectory()) {
 				log.info("Adding contents of provided rdf directory " + rdfFile.getAbsolutePath());
 				for (File f : rdfFile.listFiles()) {
 					if (!f.isDirectory())
-						addData(conn, f, rdfFormat, context);
+						addData(conn, f, rdfFormat, contextURI, dataReader);
 				}
 			} else {
-				addData(conn, rdfFile, rdfFormat, context);
+				addData(conn, rdfFile, rdfFormat, contextURI, dataReader);
 			}
+			
+			conn.commit();
+			long afterTriples = conn.size();
+			log.info("Loaded " + (afterTriples-beforeTriples) + " triples into repository for rdfFile " + rdfFile.getName() + ".");
 		} finally {
 			conn.close();
 			rep.shutDown();
@@ -137,13 +160,25 @@ public class NativeStoreFiller implements RepositoryProvider {
 		return res;
 	}
 	
-	protected void addData(RepositoryConnection conn, File rdfFile, RDFFormat rdfFormat, String context) throws Exception {
+	protected DataReader hasCustomReader(Graph graph, Resource repNode) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		Iterator<Statement> iter = graph.match(repNode, new URIImpl("http://fluidops.org/config#dataReader"), null);
+		if (!iter.hasNext())
+			return null;
+		Statement s = iter.next();
+		return (DataReader)Class.forName(s.getObject().stringValue()).newInstance();
+	}
+	
+	protected void addData(RepositoryConnection conn, File rdfFile, RDFFormat rdfFormat, URI context, DataReader dataReader) throws Exception {
+		if (dataReader!=null) {
+			log.info("Adding contents of " + rdfFile.getName() + " using provided dataReader: " + dataReader.getClass().getCanonicalName());
+			dataReader.loadData(conn, rdfFile, context);
+			return;
+		}
 		
     	rdfFormat = rdfFormat == null ? RDFFormat.forFileName(rdfFile.getName()) : rdfFormat;
-    	URI u = ValueFactoryImpl.getInstance().createURI(context);
     	if (rdfFormat != null){
-    		log.info("Adding dataset " + rdfFile.getName() + " under context " + u.toString());
-    		conn.add(rdfFile, null, rdfFormat, u);
+    		log.info("Adding dataset " + rdfFile.getName() + " under context " + context.toString());
+    		conn.add(rdfFile, null, rdfFormat, context);
     		conn.commit();
     	} else {
     		log.warn("RDF format could not be determined from fileName. Could not add data.");

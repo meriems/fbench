@@ -49,7 +49,7 @@ public class EvaluationThread extends Thread {
 			report.endQueryEvaluation(query, run, duration, numberOfResults);
 		} catch (IllegalMonitorStateException e) { 
 			// reporting is done in evaluation (finished is till false)
-			log.info("Execution of query " + query.getIdentifier() + " resulted in timeout.");
+			//log.info("Execution of query " + query.getIdentifier() + " resulted in timeout.");
 			return;
 		} catch (Exception e) {
 			report.endQueryEvaluation(query, run, -1, -1);

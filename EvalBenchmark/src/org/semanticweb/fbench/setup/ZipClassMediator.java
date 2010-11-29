@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 /**
  * Unzip a file and copy to specified destination.
  * 
+ * Assumes that dest is a directory!
+ * 
  * @author as
  *
  */
@@ -24,13 +26,18 @@ public class ZipClassMediator implements ClassMediator {
 	public void perform(File file, File dest) throws Exception {
 		ZipInputStream zip = new ZipInputStream( new BufferedInputStream(new FileInputStream(file)));
 		dest.getParentFile().mkdirs();
-		
+
 		int BUFFER = 32*1024;
 		ZipEntry entry;
         while((entry = zip.getNextEntry()) != null) {
-        	File out = new File(dest.getParent(), entry.getName());
+        	File out = new File(dest, entry.getName());
+        	log.info("Extracting file '" + entry + "' to '" + out.getAbsolutePath() + "'");
         	out.getParentFile().mkdirs();
-			log.info("Extracting file '" + entry + "' to '" + out.getAbsolutePath() + "'");
+        	if (entry.isDirectory()) {
+        		out.mkdir();
+        		continue;
+        	}       	
+			
 			int count;
 			byte data[] = new byte[BUFFER];
 			FileOutputStream fos = new FileOutputStream(out);
