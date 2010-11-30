@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 import org.semanticweb.fbench.evaluation.SesameEvaluation;
 import org.semanticweb.fbench.misc.ArgumentParser;
+import org.semanticweb.fbench.provider.SPARQLProvider;
 import org.semanticweb.fbench.query.QueryType;
 import org.semanticweb.fbench.report.CsvRdfReportStream;
 import org.semanticweb.fbench.report.NoOpEarlyResultsMonitor;
@@ -242,5 +243,25 @@ public class Config {
 	 */
 	public String getEnvConfig()  {
 		return props.getProperty("envConfig", "config/env.prop");
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * 		true iff a proxyUrl is specified
+	 */
+	public boolean useGlobalProxy() {
+		return getProxyUrl()!=null;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * 		the proxyUrl setting, i.e. (if specified) the url which shall be used
+	 * 		as proxy for HTTP SPARQL requests. Refer to {@link SPARQLProvider} for
+	 * 		some further information
+	 */
+	public String getProxyUrl() {
+		return props.getProperty("proxyUrl");
 	}
 }

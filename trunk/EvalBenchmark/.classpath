@@ -14,5 +14,10 @@
 	<classpathentry kind="lib" path="lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/lucene/lucene-core-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-6.1.24.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-sslengine-6.1.24.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-util-6.1.24.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/servlet-api-2.5-20081211.jar"/>
+	<classpathentry kind="lib" path="lib/jetty/jetty-proxy-ext.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
