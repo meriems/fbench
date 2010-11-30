@@ -127,3 +127,21 @@ evaluationClass = org.semanticweb.fbench.evaluation.SesameEvaluation
 #
 #	Default: org.semanticweb.fbench.report.NoOpEarlyResultsMonitor
 # earlyResultsMonitorClass = org.semanticweb.fbench.report.PrintEarlyResultsMonitor
+
+
+###
+# proxyUrl
+#	the proxyUrl setting, i.e. (if specified) the url which shall be used
+#	as proxy for HTTP SPARQL requests. Refer to SPARQLProvider for
+#	some further information
+#
+#	This feature is tested with the provided Jetty Proxy, which acts transparently
+#	and forwards requests according to the following scheme. 
+#
+# 	http://localhost:2000/http://myEndpoint.com:80/sparql
+#
+# 	In the above example the request is forwarded to 
+#	http://myEndpoint.com:80/sparql. Note that in the general case
+#   this URL is urlEncoded.
+#
+proxyUrl = http://localhost:2000/
