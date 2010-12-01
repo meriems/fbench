@@ -1,6 +1,0 @@
-dataConfig = suites\\cross-domain\\setup\\fill-linkedmdb.ttl
-
-envConfig = suites\\cross-domain\\env.prop
-
-fill = true
-

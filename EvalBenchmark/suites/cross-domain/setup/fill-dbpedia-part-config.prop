@@ -1,4 +1,0 @@
-dataConfig = suites\\cross-domain\\setup\\fill-dbpedia-part.ttl
-
-fill = true
-

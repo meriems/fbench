@@ -2,7 +2,7 @@ dataConfig = suites\\cross-domain\\config\\federated-sparql.ttl
 
 querySet = CROSSDOMAIN
 
-evalRuns = 5
+evalRuns = 1
 
 timeout = 20000
 
