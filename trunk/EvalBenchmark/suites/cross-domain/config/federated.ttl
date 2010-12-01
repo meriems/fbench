@@ -11,3 +11,6 @@ fluid:RepositoryLocation "data\\repositories\\native-storage.linkedmdb".
 
 <http://Jamendo> fluid:store "NativeRepo";
 fluid:RepositoryLocation "data\\repositories\\native-storage.jamendo".
+
+<http://Geonames> fluid:store "NativeRepo";
+fluid:RepositoryLocation "data\\repositories\\native-storage.geonames".
