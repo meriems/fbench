@@ -1,4 +1,4 @@
-dataConfig = suites\\cross-domain\\config\\federated.ttl
+dataConfig = suites\\cross-domain\\config\\federated-sparql-remote.ttl
 
 querySet = CROSSDOMAIN
 

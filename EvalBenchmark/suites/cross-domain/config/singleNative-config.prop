@@ -2,9 +2,10 @@ dataConfig = suites\\cross-domain\\config\\singleNative.ttl
 
 querySet = CROSSDOMAIN
 
-evalRuns = 1
+evalRuns = 3
 
-timeout = 30000
+timeout = 600000
 
 fill = false
 
+envConfig = suites\\cross-domain\\env.prop
