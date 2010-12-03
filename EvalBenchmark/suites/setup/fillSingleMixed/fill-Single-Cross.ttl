@@ -75,6 +75,11 @@ fluid:RepositoryLocation "data\\repositories\\native-storage.Single-Cross.dbpedi
 fluid:rdfFile "data\\rdf\\nytimes\\people.rdf";
 fluid:context <http://nytimes.org>.
 
+<http://LinkedMDB> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-Cross.dbpedia351-nytimes-linkedMDB-geonames-jamendo-semanticwebdog";
+fluid:rdfFile "data\\rdf\\linkedmdb\\linkedmdb-latest-dump.nt";
+fluid:context <http://LinkedMDB.org>.
+
 <http://Geonames> fluid:store "Native";
 fluid:RepositoryLocation "data\\repositories\\native-storage.Single-Cross.dbpedia351-nytimes-linkedMDB-geonames-jamendo-semanticwebdog";
 fluid:rdfFile "data\\rdf\\geonames\\";
