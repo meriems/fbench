@@ -23,7 +23,6 @@ public abstract class Evaluation {
 	public static Logger log = Logger.getLogger(Evaluation.class);
 	
 	protected ReportStream report;
-	protected Object monitor;
 	protected EarlyResultsMonitor earlyResults;
 	
 	public Evaluation() {
@@ -91,15 +90,17 @@ public abstract class Evaluation {
 			runMultiEval();
 		}
 		
+		report.close();
+		
 		// perform any clean up, e.g. in Sesame close repositories
 		try {
+			log.info("Peform any cleanup operation.");
 			finish();
 		} catch (Exception e) {
 			log.error("Error during clean up in " + this.getClass().getCanonicalName() + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 			log.debug("Exception details:", e);
 		}
 		
-		report.close();
 	}
 	
 	
@@ -175,37 +176,50 @@ public abstract class Evaluation {
 	
 	protected synchronized void runMultiEvalTimeout() {
 		
-		log.info("Evaluation of queries in multiple runs (using timeouts) ...");
-		
 		int evalRuns = Config.getConfig().getEvalRuns();
 		long timeout = Config.getConfig().getTimeout();
 		
-		monitor = new Object();
+		log.info("Evaluation of queries in multiple runs (using timeout of " + timeout + "ms) ...");
 		
 		report.beginEvaluation(Config.getConfig().getDataConfig(), Config.getConfig().getQuerySet(), QueryManager.getQueryManager().getQueries().size(), evalRuns);
 		long evalStart = System.currentTimeMillis();
 		
+		boolean reInit = false;
 		for (int run = 1; run <= evalRuns; run++){
 			report.beginRun(run, evalRuns);
 			long runStart = System.currentTimeMillis();
 			for (Query q : QueryManager.getQueryManager().getQueries()) {
 				try {
-					log.info("Executing query " + q.getIdentifier() + ", run " + run);
+					log.info("Executing query " + q.getIdentifier() + ", run " + run );
 					EvaluationThread eval = new EvaluationThread(this, q, report, earlyResults, run);
+					
+					if (reInit) {
+						this.reInitialize();		// re establish connections
+						reInit = false;
+					}
+					
 					eval.start();
 					
 					synchronized (Evaluation.class) {
 						Evaluation.class.wait(timeout);
 					}
 					
-					eval.stop();	// TODO check if this is really safe in this scenario, we have shared objects
+					eval.interrupt();		// XXX
+					eval.stop();			// TODO check if this is really safe in this scenario, we have shared objects
 					if (!eval.isFinished()) {
 						log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 						report.endQueryEvaluation(q, run, -1, -1);
+						reInit = true;
 					}
 				} catch (InterruptedException e) {
 					log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 					report.endQueryEvaluation(q, run, -1, -1);
+					reInit = true;
+				} catch (Exception e) {
+					report.endQueryEvaluation(q, run, -1, -1);
+					log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
+					log.debug("Exception details:", e);
+					reInit = true;
 				}
 				earlyResults.queryDone();
 			}
@@ -226,6 +240,14 @@ public abstract class Evaluation {
 	 * @throws Exception
 	 */
 	public abstract void initialize() throws Exception;
+	
+	/**
+	 * Perform any initializations here, i.e. load repositories, open streams, etc.
+	 * 
+	 * @throws Exception
+	 */
+	public abstract void reInitialize() throws Exception;
+	
 	
 	/**
 	 * Clean up after all queries are run, i.e. close streams etc
@@ -257,7 +279,5 @@ public abstract class Evaluation {
 	 * @throws Exception
 	 */
 	public abstract int runQueryDebug(Query query, boolean showResult) throws Exception;
-	
-	
 	
 }

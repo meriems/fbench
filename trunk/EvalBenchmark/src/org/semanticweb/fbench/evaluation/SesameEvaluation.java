@@ -2,13 +2,17 @@ package org.semanticweb.fbench.evaluation;
 
 import org.apache.log4j.Logger;
 import org.openrdf.query.BindingSet;
+import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.semanticweb.fbench.Config;
+import org.semanticweb.fbench.misc.TimedInterrupt;
 import org.semanticweb.fbench.query.Query;
+import org.semanticweb.fbench.report.VoidReportStream;
 
 
 
@@ -30,7 +34,18 @@ public class SesameEvaluation extends Evaluation {
 	
 	@Override
 	public void finish() throws Exception {
-		conn.close();	
+		log.debug("Trying to close connection, interrupt time is 10000");
+		new TimedInterrupt().run( new Runnable() {
+			@Override
+			public void run() {
+				try {
+					conn.close();
+					log.info("Connection successfully closed.");
+				} catch (RepositoryException e) {
+					log.error("Error closing conenction: " + e.getMessage());
+				}						
+			}
+		}, 10000);	
 		sailRepo.shutDown();
 	}
 
@@ -50,7 +65,10 @@ public class SesameEvaluation extends Evaluation {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, q.getQuery());
 		TupleQueryResult res = (TupleQueryResult) query.evaluate();
 		int resCounter = 0;
+		
 		while(res.hasNext()){
+			if (isInterrupted())
+				throw new QueryEvaluationException("Thread has been interrupted.");
 			BindingSet bindings = res.next();
 			resCounter++;
 			earlyResults.handleResult(bindings, resCounter);			
@@ -63,7 +81,10 @@ public class SesameEvaluation extends Evaluation {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, q.getQuery());
 		TupleQueryResult res = (TupleQueryResult) query.evaluate();
 		int resCounter = 0;
+				
 		while(res.hasNext()){
+			if (isInterrupted())
+				throw new QueryEvaluationException("Thread has been interrupted.");
 			BindingSet bindings = res.next();
 			if (showResult){
 				// TODO use logging
@@ -73,7 +94,44 @@ public class SesameEvaluation extends Evaluation {
 			resCounter++;
 			earlyResults.handleResult(bindings, resCounter);	
 		}
+		
 		return resCounter;
 	}
 
+		
+	protected boolean isInterrupted() {
+		return Thread.interrupted();
+	}
+
+	@Override
+	public void reInitialize() throws Exception {
+		log.info("Reinitializing repository and connection due to error in past results.");
+		if (sailRepo!=null) {
+			sailRepo.shutDown();
+			sailRepo = null;
+		}
+		log.debug("Repository shut down.");
+		if (conn.isOpen())  {
+			try {
+				log.debug("Trying to close connection, interrupt time is 10000");
+				new TimedInterrupt().run( new Runnable() {
+					@Override
+					public void run() {
+						try {
+							conn.close();
+							log.info("Connection successfully closed.");
+						} catch (RepositoryException e) {
+							log.error("Error closing conenction: " + e.getMessage());
+						}						
+					}
+				}, 10000);
+				
+			} catch (Exception e) { ; /*ignore*/ }
+		}
+		log.debug("loading repositories from scratch.");
+		System.gc();
+		sailRepo = SesameRepositoryLoader.loadRepositories(new VoidReportStream());
+		conn = sailRepo.getConnection();
+		log.debug("reinitialize done.");
+	}
 }

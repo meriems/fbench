@@ -64,6 +64,7 @@ public class CsvReportStream implements ReportStream {
 		try {
 			// run;query-id;dataConfig;queryTime;results;
 			evalOut.append(run+";"+query.getIdentifier()+";"+dataConfig+";"+duration+";"+numberOfResults+";\n");
+			evalOut.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("IOError: " + e.getMessage(), e);
 		}

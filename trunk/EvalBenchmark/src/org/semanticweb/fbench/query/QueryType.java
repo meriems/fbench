@@ -14,6 +14,8 @@ public enum QueryType {
 	
 	LIFESCIENCEDOMAIN("Life science domain queries", "lifescience-domain"),
 	
+	SP2B("SP2B queries", "SP2B"),
+	
 	CUSTOM1("Custom SPARQL query", "custom1");
 	
 	
