@@ -41,6 +41,7 @@ public class EvaluationThread extends Thread {
 	@Override
 	public void run() {
 		try {
+			log.info("Evaluation of query " + query.getIdentifier() + " in thread " + Thread.currentThread().getName());
 			report.beginQueryEvaluation(query, run);
 			long start = System.currentTimeMillis();
 			earlyResults.nextQuery(query, start);
@@ -48,8 +49,9 @@ public class EvaluationThread extends Thread {
 			long duration = System.currentTimeMillis() - start;
 			report.endQueryEvaluation(query, run, duration, numberOfResults);
 		} catch (IllegalMonitorStateException e) { 
-			// reporting is done in evaluation (finished is till false)
+			// reporting is done in evaluation (finished is still false)
 			//log.info("Execution of query " + query.getIdentifier() + " resulted in timeout.");
+			log.debug("Thread " + Thread.currentThread().getName() + " lost monitor. Timeout occurred. Thread will close.");
 			return;
 		} catch (Exception e) {
 			report.endQueryEvaluation(query, run, -1, -1);
