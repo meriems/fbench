@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.pattern.ClassNamePatternConverter;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -78,6 +79,19 @@ public class SesameRepositoryLoader {
 			s = iter.next();
 			repNode = s.getSubject();
 			repType = s.getObject();
+			
+			// WeST RDF federator
+			if (repType.equals(new LiteralImpl("RDFFederator"))){
+				RepositoryProvider rep;
+				String className = "org.semanticweb.fbench.provider.RDFFederatorProvider";
+				try {
+					Class<?> federatorClass = Class.forName(className);
+					rep = (RepositoryProvider) federatorClass.newInstance();
+				} catch (ClassNotFoundException e) {
+					throw new RuntimeException("ClassNotFoundException '" + className + "': probably RDFFederator.jar is missing on the classpath." );
+				}
+				return (SailRepository)rep.load(graph, repNode);
+			}
 			
 			// special cases: no federation needed, just a single local store
 			if (repType.equals(new LiteralImpl("SingleNative"))){
