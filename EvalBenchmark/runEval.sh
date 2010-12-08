@@ -1,1 +1,6 @@
-java -Dlog4j.configuration=file:config/log4j.properties -cp lib/fbench.jar:lib/slf4j/*:lib/log4j/*:lib/sesame/*:lib/commons/*:lib/lucene/* org.semanticweb.fbench.FederationEval $*
+# !/bin/sh
+
+# collect all jars
+for jar in `ls lib/fbench.jar lib/federator.jar lib/*/*.jar`; do path=$path:$jar; done
+
+java -Dlog4j.configuration=file:config/log4j.properties -cp bin$path org.semanticweb.fbench.FederationEval $*
