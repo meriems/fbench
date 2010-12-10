@@ -29,7 +29,8 @@
          fed:member [
             rep:repositoryType "west:VoidRepository" ;
             fed:voidDescription <void/nytimes-2010-01-13-void.n3> ;
-            void:sparqlEndpoint <http://api.talis.com/stores/nytimes/services/sparql>
+            void:sparqlEndpoint <http://api.talis.com/stores/nytimes/services/sparql> ;
+#            void:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/nyt>
          ], [
             rep:repositoryType "west:VoidRepository" ;
             fed:voidDescription <void/mappingbased_properties_en_cleaned-void.n3> ;
@@ -38,6 +39,11 @@
             rep:repositoryType "west:VoidRepository" ;
             fed:voidDescription <void/instance_types_en-void.n3> ;
             void:sparqlEndpoint <http://dbpedia.org/sparql>
+         ], [
+            rep:repositoryType "west:VoidRepository" ;
+            fed:voidDescription <void/linkedmdb-dump-2010-01-19-void.n3> ;
+            void:sparqlEndpoint <http://data.linkedmdb.org/sparql> ;
+#            void:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/linkedmdb>
          ]
       ]
    ] .
