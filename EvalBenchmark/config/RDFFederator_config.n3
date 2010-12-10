@@ -33,11 +33,7 @@
 #            void:sparqlEndpoint <http://localhost:8080/openrdf-sesame/repositories/nyt>
          ], [
             rep:repositoryType "west:VoidRepository" ;
-            fed:voidDescription <void/mappingbased_properties_en_cleaned-void.n3> ;
-            void:sparqlEndpoint <http://dbpedia.org/sparql>
-         ], [
-            rep:repositoryType "west:VoidRepository" ;
-            fed:voidDescription <void/instance_types_en-void.n3> ;
+            fed:voidDescription <void/dbpedia3.5.1_subset-void.n3> ;
             void:sparqlEndpoint <http://dbpedia.org/sparql>
          ], [
             rep:repositoryType "west:VoidRepository" ;
