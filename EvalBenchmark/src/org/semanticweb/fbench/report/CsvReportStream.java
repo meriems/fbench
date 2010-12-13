@@ -63,7 +63,7 @@ public class CsvReportStream implements ReportStream {
 			int numberOfResults) {
 		try {
 			// run;query-id;dataConfig;queryTime;results;
-			evalOut.append(run+";"+query.getIdentifier()+";"+dataConfig+";"+duration+";"+numberOfResults+";\n");
+			evalOut.append(run+";"+query.getIdentifier()+";"+dataConfig+";"+duration+";"+numberOfResults+";\r\n");
 			evalOut.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("IOError: " + e.getMessage(), e);
@@ -81,11 +81,11 @@ public class CsvReportStream implements ReportStream {
 		// evaluation file
 		String file = Config.getConfig().getBaseDir() + "result\\result.csv"; 
 		evalOut = new BufferedWriter( new FileWriter(file));
-		evalOut.append("run;query-id;dataConfig;queryTime;results;\n");
+		evalOut.append("run;query-id;dataConfig;queryTime;results;\r\n");
 		
 		String file2 = Config.getConfig().getBaseDir() + "result\\loadTimes.csv"; 
 		loadOut = new BufferedWriter( new FileWriter(file2));
-		loadOut.append("id;name;location;type;duration;\n");
+		loadOut.append("id;name;location;type;duration;\r\n");
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class CsvReportStream implements ReportStream {
 	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration) {
 		try {
 			// id;name;location;type;duration;
-			loadOut.append(id+";"+name+";"+location+";"+type+";"+duration+";\n");
+			loadOut.append(id+";"+name+";"+location+";"+type+";"+duration+";\r\n");
 			loadOut.flush();
 		} catch (IOException e) {
 			throw new RuntimeException("IOError: " + e.getMessage(), e);

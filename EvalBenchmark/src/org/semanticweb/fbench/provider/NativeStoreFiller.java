@@ -107,6 +107,7 @@ public class NativeStoreFiller implements RepositoryProvider {
 		rep.initialize();
 		
 		RepositoryConnection conn = rep.getConnection();
+		conn.setAutoCommit(false);	
 		
 		RDFFormat rdfFormat = getSpecifiedRdfFormat(graph, repNode);	// can still be null if not specified
 		
@@ -179,7 +180,6 @@ public class NativeStoreFiller implements RepositoryProvider {
     	if (rdfFormat != null){
     		log.info("Adding dataset " + rdfFile.getName() + " under context " + context.toString());
     		conn.add(rdfFile, null, rdfFormat, context);
-    		conn.commit();
     	} else {
     		log.warn("RDF format could not be determined from fileName. Could not add data.");
     		throw new RuntimeException("RDF format could not be determined for " + rdfFile.getName() + ". Specification in ttl data configuration necessary.");

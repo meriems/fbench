@@ -54,7 +54,7 @@ public class SparqlServlet extends HttpServlet {
 	
 	protected static Repository repo = null;
 	protected static Executor executor = Executors.newCachedThreadPool();
-	
+	protected static boolean initialized = false;
 	
 	public SparqlServlet() {
 		initializeRepository();
@@ -81,7 +81,7 @@ public class SparqlServlet extends HttpServlet {
 			
 			ServletOutputStream outputStream = resp.getOutputStream();
             processQuery(query, req, resp, outputStream);
-			//outputstream.flush();
+			outputStream.flush();
 			outputStream.close();
 			reader.close();
 		} 
@@ -109,7 +109,7 @@ public class SparqlServlet extends HttpServlet {
 			outputStream.close();
 		} 
 		catch (IOException e) {
-			e.printStackTrace();
+			log.error("Error: ", e);
 		}
 
 	}
@@ -135,7 +135,22 @@ public class SparqlServlet extends HttpServlet {
 	private void processQuerySynch(String query, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream)	{
           
 		RepositoryConnection conn = null;
-        try {	   
+        try {	 
+        	
+        	if (!isInitialized()) {
+        		resp.setStatus(503);
+				outputStream.print("Error occured while processing the query: repository is not initialized.");
+				outputStream.flush();
+				
+				// changed msc: TRY to transmit a result in addition
+	            FileFormatServiceRegistry<? extends FileFormat, ?> registry = BooleanQueryResultWriterRegistry.getInstance();
+				BooleanQueryResultWriterFactory qrWriterFactory = (BooleanQueryResultWriterFactory)ProtocolUtil.getAcceptableService(req, resp, registry);
+	            BooleanQueryResultWriter qrWriter = qrWriterFactory.getWriter(outputStream);
+	            qrWriter.write(false);
+	            
+	            return;
+        	}
+        	
         	conn = repo.getConnection();
         	        	
         	query = query.trim();
@@ -187,20 +202,24 @@ public class SparqlServlet extends HttpServlet {
 	            
 	            QueryResultUtil.report(res, qrWriter);
 	        }
-	        
+	        outputStream.flush();
+	        conn.close();	// check if this is blocking, if yes, make it asynchronous
+
 	    }        
 	    catch (Exception e) {
 	    	try {
 	    		resp.setStatus(501);
 				outputStream.print("Error occured while processing the query. " + e.getClass().getSimpleName() + ": " + e.getMessage());
 				outputStream.flush();
+				
 			} catch (IOException e1) {
 				// ignore
+			} catch (Exception e2) {
+				// ignore
 			}
-
-	    } finally {
-
-	    	final RepositoryConnection _conn = conn;
+			
+			log.error("Error occured while processing the query. Trying to close the connection asynchronously.");
+			final RepositoryConnection _conn = conn;
 	    	executor.execute( new Runnable() {
 				@Override
 				public void run() {
@@ -210,16 +229,38 @@ public class SparqlServlet extends HttpServlet {
 						public void run() {
 							try {
 								_conn.close();
-								//	log.info("Connection successfully closed.");
 								System.gc();
 							} catch (RepositoryException e) {
 								log.error("Error closing conenction.", e);
 							}						
 						}
-					}, 1000);
+					}, 10000);
 					System.gc();					
 				}
 			});
+
+	    } finally {
+
+//	    	final RepositoryConnection _conn = conn;
+//	    	executor.execute( new Runnable() {
+//				@Override
+//				public void run() {
+//					
+//					new TimedInterrupt().run( new Runnable() {
+//						@Override
+//						public void run() {
+//							try {
+//								_conn.close();
+//								//	log.info("Connection successfully closed.");
+//								System.gc();
+//							} catch (RepositoryException e) {
+//								log.error("Error closing conenction.", e);
+//							}						
+//						}
+//					}, 1000);
+//					System.gc();					
+//				}
+//			});
 	    	
 	    }
 	}
@@ -238,6 +279,7 @@ public class SparqlServlet extends HttpServlet {
 			throw new RuntimeException(e);
 		}
 		
+		initialized = true;
 		log.info("Repository successfully initialized.");
 		
 	}
@@ -256,6 +298,7 @@ public class SparqlServlet extends HttpServlet {
 		if (type.equals("native")) {
 			log.info("Initializing instance with native repository at " + loc);
 			res = new SailRepository( getNativeStore(new File(loc), "spoc,psoc") );
+			log.info("Repository initialized.");
 		} else {
 			throw new RuntimeException("Type not supported yet: " + type);
 		}
@@ -290,5 +333,18 @@ public class SparqlServlet extends HttpServlet {
                 super.shutDown();
             }
         };
+    }
+    
+    
+    private void setInitialize(boolean flag) {
+    	synchronized (SparqlServlet.class) {
+    		initialized = flag;
+    	}
+    }
+    
+    private boolean isInitialized() {
+    	synchronized (SparqlServlet.class) {
+    		return initialized;
+    	}
     }
 }

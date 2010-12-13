@@ -82,7 +82,7 @@ public class StartJettyProxy {
 		}
 		
 		if (System.getProperty("log4j.configuration")==null)
-			System.setProperty("log4j.configuration", "file:config/log4j.properties");
+			System.setProperty("log4j.configuration", "file:config/log4j-proxy.properties");
 		Server server = new Server();
 		XmlConfiguration configuration = new XmlConfiguration(new File(jettyCfg).toURI().toURL());
 	    configuration.configure(server);
