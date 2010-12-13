@@ -59,7 +59,7 @@ public class Config {
 		instance = new Config();
 		
 		for (Property p : ArgumentParser.parseArguments(args))
-			instance.addProperty(p.key, p.value);
+			instance.setProperty(p.key, p.value);
 		
 		instance.init(instance.getProperty("configFile", "config/config.prop"));
 		
@@ -73,7 +73,7 @@ public class Config {
 		props = new Properties();
 	}
 	
-	private void addProperty(String prop, String value) {
+	public void setProperty(String prop, String value) {
 		props.setProperty(prop, value);
 	}
 	

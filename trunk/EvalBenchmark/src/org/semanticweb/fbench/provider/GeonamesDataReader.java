@@ -57,7 +57,6 @@ public class GeonamesDataReader implements DataReader {
 				StringReader nextDocument = new StringReader(line);
 				try {
 					conn.add(nextDocument, file.toURI().toString(), RDFFormat.RDFXML, context);
-					conn.commit();
 				} catch (RDFParseException e) {
 					errorCount++;
 					errorDocs.write(docId + "\r\n");

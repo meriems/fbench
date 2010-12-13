@@ -7,7 +7,7 @@ public class TimedInterrupt {
 	
 	public static Logger log = Logger.getLogger(TimedInterrupt.class);
 	
-	public void run(Runnable r, long timeout) {
+	public boolean run(Runnable r, long timeout) {
 	
 		MyThread t = new MyThread(this, r);
 		
@@ -27,7 +27,10 @@ public class TimedInterrupt {
 //			log.info("Stopping task in thread " + t.getName() + ". Timeout reached.");
 			t.interrupt();
 			t.stop();
+			return false;
 		}
+		
+		return true;
 			
 	}
 	

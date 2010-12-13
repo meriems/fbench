@@ -23,6 +23,7 @@ public class EvaluationThread extends Thread {
 	protected int run;
 	
 	private boolean finished;
+	private boolean error;
 		
 	public EvaluationThread(Evaluation evaluator, Query query, ReportStream report, EarlyResultsMonitor earlyResults, int run) {
 		super();
@@ -38,9 +39,14 @@ public class EvaluationThread extends Thread {
 		return this.finished;
 	}
 	
+	public boolean isError() {
+		return this.error;
+	}
+	
 	@Override
 	public void run() {
 		try {
+			error = false;
 			log.info("Evaluation of query " + query.getIdentifier() + " in thread " + Thread.currentThread().getName());
 			report.beginQueryEvaluation(query, run);
 			long start = System.currentTimeMillis();
@@ -52,11 +58,13 @@ public class EvaluationThread extends Thread {
 			// reporting is done in evaluation (finished is still false)
 			//log.info("Execution of query " + query.getIdentifier() + " resulted in timeout.");
 			log.debug("Thread " + Thread.currentThread().getName() + " lost monitor. Timeout occurred. Thread will close.");
+			error = true;
 			return;
 		} catch (Exception e) {
-			report.endQueryEvaluation(query, run, -1, -1);
+			report.endQueryEvaluation(query, run, -2, -1);
 			log.error("Error executing query " + query.getIdentifier() + " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 			log.debug("Exception details:", e);
+			error = true;
 		}
 		this.finished = true;
 		synchronized (Evaluation.class) {

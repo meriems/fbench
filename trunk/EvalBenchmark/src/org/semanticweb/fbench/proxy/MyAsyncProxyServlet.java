@@ -59,8 +59,8 @@ public class MyAsyncProxyServlet extends AsyncProxyServlet {
 		
 		int port = forwardURL.getPort() == -1 ? 80 : forwardURL.getPort();
 		
-		if (log.isDebugEnabled())
-			log.debug("Incoming forward request for " + forwardURL);
+		if (log.isTraceEnabled())
+			log.trace("Incoming forward request for " + forwardURL);
 		
 		return new HttpURI(forwardURL.getProtocol()+"://"+forwardURL.getHost()+":"+port+ forwardURL.getFile());
 	}

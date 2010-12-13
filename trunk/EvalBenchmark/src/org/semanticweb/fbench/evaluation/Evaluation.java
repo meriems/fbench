@@ -123,7 +123,7 @@ public abstract class Evaluation {
 				earlyResults.queryDone();
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
 			} catch (Exception e) {
-				report.endQueryEvaluation(q, 1, -1, -1);
+				report.endQueryEvaluation(q, 1, -2, -1);
 				log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 				log.debug("Exception details:", e);
 			}
@@ -157,7 +157,7 @@ public abstract class Evaluation {
 					earlyResults.queryDone();
 					report.endQueryEvaluation(q, run, duration, numberOfResults);
 				} catch (Exception e) {
-					report.endQueryEvaluation(q, run, -1, -1);
+					report.endQueryEvaluation(q, run, -2, -1);
 					log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 					log.debug("Exception details:", e);
 				}
@@ -211,12 +211,15 @@ public abstract class Evaluation {
 						report.endQueryEvaluation(q, run, -1, -1);
 						reInit = true;
 					}
+					if (eval.isError())
+						reInit = true;
+
 				} catch (InterruptedException e) {
 					log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 					report.endQueryEvaluation(q, run, -1, -1);
 					reInit = true;
 				} catch (Exception e) {
-					report.endQueryEvaluation(q, run, -1, -1);
+					report.endQueryEvaluation(q, run, -2, -1);
 					log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 					log.debug("Exception details:", e);
 					reInit = true;

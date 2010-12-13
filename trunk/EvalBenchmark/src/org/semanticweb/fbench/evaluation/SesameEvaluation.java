@@ -128,6 +128,8 @@ public class SesameEvaluation extends Evaluation {
 				
 			} catch (Exception e) { ; /*ignore*/ }
 		}
+//		log.info("Waiting for 2 minutes to give server time for reinitialization");
+//		Thread.sleep(120000);
 		log.debug("loading repositories from scratch.");
 		System.gc();
 		sailRepo = SesameRepositoryLoader.loadRepositories(new VoidReportStream());

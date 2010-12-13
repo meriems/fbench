@@ -24,9 +24,6 @@ public class FederationEval {
 			
 	public static void main(String[] args) {
 		
-//		args = new String[] { "suites\\cross-domain\\setup\\fill-geonames-config.prop" };
-//		args = new String[] { "-setup" };
-		
 		// initialize config: load properties
 		// if no arg specified, config's location is config\config.prop
 		try {
