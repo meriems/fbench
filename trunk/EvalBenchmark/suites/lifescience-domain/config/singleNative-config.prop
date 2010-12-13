@@ -1,0 +1,11 @@
+dataConfig = suites\\lifescience-domain\\config\\singleNative.ttl
+
+querySet = LIFESCIENCEDOMAIN
+
+evalRuns = 3
+
+timeout = 600000
+
+fill = false
+
+envConfig = suites\\lifescience-domain\\env.prop
