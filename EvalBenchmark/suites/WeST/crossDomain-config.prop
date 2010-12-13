@@ -1,0 +1,13 @@
+dataConfig = suites\\olaf\\crossDomain.ttl
+
+querySet = CROSSDOMAIN
+
+evalRuns = 3
+
+timeout = 600000
+
+fill = false
+
+envConfig = suites\\SP2B-10M\\env.prop
+
+evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation

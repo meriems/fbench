@@ -71,9 +71,9 @@ fluid:destPath "data\\rdf\\linkedmdb\\";
 fluid:classMediator "org.semanticweb.fbench.setup.ZipClassMediator" .
 
 <http://Geonames> fluid:localSource "C:\\dlData\\all-geonames.chunked.2010-11-28.zip";
-fluid:webSource "http://iwb.fluidops.com:7777/datasets/all-geonames.chunked.2010-11-28.zip";
-fluid:destPath "data\\rdf\\geonames\\";
-fluid:classMediator "org.semanticweb.fbench.setup.ZipClassMediator" .
+fluid:webSource "http://iwb.fluidops.com:7777/datasets/all-geonames-2010-11-28_cleaned.n3.bz2";
+fluid:destPath "data\\rdf\\geonames\\all-geonames-2010-11-28_cleaned.n3";
+fluid:classMediator "org.semanticweb.fbench.setup.BZipClassMediator" .
 
 <http://Jamendo> fluid:localSource "C:\\dlData\\jamendo-rdf-downloaded-2010-11-25.tar.gz";
 fluid:webSource "http://iwb.fluidops.com:7777/datasets/jamendo-rdf-downloaded-2010-11-25.tar.gz";

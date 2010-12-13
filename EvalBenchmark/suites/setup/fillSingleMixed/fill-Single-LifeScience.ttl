@@ -1,5 +1,35 @@
 @prefix fluid: <http://fluidops.org/config#>.
 
+<http://KEGG.CPD> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\KEGG\\kegg.cpd.n3";
+fluid:context <http://KEGG.org>.
+
+<http://KEGG.DR> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\KEGG\\kegg.dr.n3";
+fluid:context <http://KEGG.org>.
+
+<http://KEGG.EC> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\KEGG\\kegg.ec.n3";
+fluid:context <http://KEGG.org>.
+
+<http://KEGG.RN> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\KEGG\\kegg.rn.n3";
+fluid:context <http://KEGG.org>.
+
+<http://drugbank> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\drugbank\\drugbank_dump.nt";
+fluid:context <http://drugbank.org>.
+
+<http://chEBI> fluid:store "Native";
+fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
+fluid:rdfFile "data\\rdf\\chEBI\\chebi.n3";
+fluid:context <http://chEBI.org>.
+
 <http://DBpedia.Ontology> fluid:store "Native";
 fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
 fluid:rdfFile "data\\rdf\\dbpedia351\\dbpedia_3.5.1.owl";
@@ -59,33 +89,3 @@ fluid:context <http://DBpedia.org>.
 fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
 fluid:rdfFile "data\\rdf\\dbpedia351\\DBpedia-LGD.nt";
 fluid:context <http://DBpedia.org>.
-
-<http://KEGG.CPD> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\KEGG\\kegg.cpd.n3";
-fluid:context <http://KEGG.org>.
-
-<http://KEGG.DR> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\KEGG\\kegg.dr.n3";
-fluid:context <http://KEGG.org>.
-
-<http://KEGG.EC> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\KEGG\\kegg.ec.n3";
-fluid:context <http://KEGG.org>.
-
-<http://KEGG.RN> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\KEGG\\kegg.rn.n3";
-fluid:context <http://KEGG.org>.
-
-<http://drugbank> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\drugbank\\drugbank_dump.nt";
-fluid:context <http://drugbank.org>.
-
-<http://chEBI> fluid:store "Native";
-fluid:RepositoryLocation "data\\repositories\\native-storage.Single-LifeScience.dbpedia351-KEGG-Drugbank-chEBI";
-fluid:rdfFile "data\\rdf\\chEBI\\chebi.n3";
-fluid:context <http://chEBI.org>.
