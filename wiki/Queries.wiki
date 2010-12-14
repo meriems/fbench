@@ -489,9 +489,9 @@ The following queries are used in the Linked Data scenario.
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT * WHERE {
-?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> <http://data.semanticweb.org/conference/iswc/2008/poster_demo_proceedings> .
-?paper <http://swrc.ontoware.org/ontology#author> ?p .
-?p rdfs:label ?n .
+   ?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> <http://data.semanticweb.org/conference/iswc/2008/poster_demo_proceedings> .
+   ?paper <http://swrc.ontoware.org/ontology#author> ?p .
+   ?p rdfs:label ?n .
 }
 }}}
 
@@ -500,9 +500,9 @@ SELECT * WHERE {
 
 {{{
 SELECT * WHERE {
-?proceedings <http://data.semanticweb.org/ns/swc/ontology#relatedToEvent>  <http://data.semanticweb.org/conference/eswc/2010> .
-?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> ?proceedings .
-?paper <http://swrc.ontoware.org/ontology#author> ?p .
+   ?proceedings <http://data.semanticweb.org/ns/swc/ontology#relatedToEvent>  <http://data.semanticweb.org/conference/eswc/2010> .
+   ?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> ?proceedings .
+   ?paper <http://swrc.ontoware.org/ontology#author> ?p .
 }
 }}}
 
@@ -511,10 +511,10 @@ SELECT * WHERE {
 
 {{{
 SELECT * WHERE {
-?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> <http://data.semanticweb.org/conference/iswc/2008/poster_demo_proceedings> .
-?paper <http://swrc.ontoware.org/ontology#author> ?p .
-?p owl:sameAs ?x .
-?p rdfs:label ?n .
+   ?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> <http://data.semanticweb.org/conference/iswc/2008/poster_demo_proceedings> .
+   ?paper <http://swrc.ontoware.org/ontology#author> ?p .
+   ?p owl:sameAs ?x .
+   ?p rdfs:label ?n .
 }
 }}}
 
@@ -523,11 +523,11 @@ SELECT * WHERE {
 
 {{{
 SELECT * WHERE {
-?role <http://data.semanticweb.org/ns/swc/ontology#isRoleAt> <http://data.semanticweb.org/conference/eswc/2010> .
-?role <http://data.semanticweb.org/ns/swc/ontology#heldBy> ?p .
-?paper <http://swrc.ontoware.org/ontology#author> ?p .
-?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> ?proceedings .
-?proceedings <http://data.semanticweb.org/ns/swc/ontology#relatedToEvent>  <http://data.semanticweb.org/conference/eswc/2010> .
+   ?role <http://data.semanticweb.org/ns/swc/ontology#isRoleAt> <http://data.semanticweb.org/conference/eswc/2010> .
+   ?role <http://data.semanticweb.org/ns/swc/ontology#heldBy> ?p .
+   ?paper <http://swrc.ontoware.org/ontology#author> ?p .
+   ?paper <http://data.semanticweb.org/ns/swc/ontology#isPartOf> ?proceedings .
+   ?proceedings <http://data.semanticweb.org/ns/swc/ontology#relatedToEvent>  <http://data.semanticweb.org/conference/eswc/2010> .
 }
 }}}
 
@@ -536,9 +536,9 @@ SELECT * WHERE {
 
 {{{
 SELECT * WHERE {
-?a dbowl:artist dbpedia:Michael_Jackson .
-?a rdf:type dbowl:Album .
-?a foaf:name ?n .
+   ?a dbowl:artist dbpedia:Michael_Jackson .
+   ?a rdf:type dbowl:Album .
+   ?a foaf:name ?n .
 }
 }}}
 
@@ -560,15 +560,15 @@ SELECT * WHERE {
 
 {{{   
 SELECT * WHERE {
-?x gn:parentFeature <http://sws.geonames.org/2921044/> .
-?x gn:name ?n .
+   ?x gn:parentFeature <http://sws.geonames.org/2921044/> .
+   ?x gn:name ?n .
 }
 }}}
 
-</pre>
-== LD8 ==
-<pre>
 
+ * *LD8:*
+
+{{{
 SELECT * WHERE {
    ?drug drugbank:drugCategory <http://www4.wiwiss.fu-berlin.de/drugbank/resource/drugcategory/micronutrient> .
    ?drug drugbank:casRegistryNumber ?id .
@@ -576,30 +576,32 @@ SELECT * WHERE {
    ?s foaf:name ?o .
    ?s skos:subject ?sub .
 }
-</pre>
-== LD9 ==
-<pre>
+}}}
 
+ * *LD9:*
+
+{{{
 SELECT * WHERE {
   ?x skos:subject <http://dbpedia.org/resource/Category:FIFA_World_Cup-winning_countries> .
   ?p dbowl:managerClub ?x .
   ?p foaf:name "Luiz Felipe Scolari" .
 }          
+}}}
 
-</pre>
-== LD10 ==
-<pre>
+ * *LD10:*
 
+{{{
 SELECT * WHERE {
  ?n skos:subject <http://dbpedia.org/resource/Category:Chancellors_of_Germany> .
  ?n owl:sameAs ?p2 .
  ?p2 <http://data.nytimes.com/elements/latest_use> ?u .
 }
+}}}
 
-</pre>
-== LD11 ==
-<pre>
 
+ * *LD11:*
+
+{{{
 SELECT * WHERE {
   ?x dbowl:team dbpedia:Eintracht_Frankfurt .
   ?x rdfs:label ?y .
@@ -607,5 +609,4 @@ SELECT * WHERE {
   ?x dbowl:birthPlace ?p .
   ?p rdfs:label ?l .
 }          
-
-</pre>
+}}}
