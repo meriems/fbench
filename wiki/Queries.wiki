@@ -1,6 +1,6 @@
 #summary List of queries used in FedBench
 
-= Introduction =
+= Benchmark Queries =
 
 In this document we summarize the queries used in FedBench and group them along the following domains and types:
 
@@ -12,7 +12,7 @@ In this document we summarize the queries used in FedBench and group them along 
 We furthermore indicate the required [Datasets] for the given query set.
 
 
-= Queries =
+= Classification =
 
 The queries are classified into four types. All queries can be downloaded in plain txt files in the download section.
 
