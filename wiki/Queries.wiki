@@ -1,0 +1,37 @@
+#summary List of queries used in FedBench
+
+= Introduction =
+
+In this document we summarize the queries used in FedBench and group them along the following domains and types:
+
+ * [Queries#Cross_Domain_(CD) Cross Domain Queries (CD)]
+ * [Queries#Life_Science_(LS) Life Science Queries (LS)]
+ * [Queries#SP2B_(SP) SP2B Queries (SP)]
+ * [Queries#Linked_Data_(LD) Linked Data (LD)]
+
+We furthermore indicate the required [Datasets] for the given query set.
+
+
+= Queries =
+
+The queries are classified into four types. All queries can be downloaded in plain txt files in the download section.
+
+
+== Cross domain (CD)==
+
+TODO
+
+
+== Life Science (LS) ==
+
+TODO
+
+
+== SP2B (SP) ==
+
+TODO
+
+
+== Linked Data (LD) ==
+
+TODO
