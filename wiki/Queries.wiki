@@ -239,7 +239,7 @@ SELECT ?drug ?transform ?mass WHERE {
 
 == SP2B (SP) ==
 
-The following queries are for the SP2Bench data set and for convenience the following prefixes are used.
+The following queries are for the SP2Bench data set and for convenience the following prefixes are used. Here you can find a description of the [http://arxiv.org/abs/0806.4627 SP2Bench Framework].
 
  * *bench:* <http://localhost/vocabulary/bench/>
  * *dc:* <http://purl.org/dc/elements/1.1/>
