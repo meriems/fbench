@@ -1,4 +1,6 @@
-== Benchmark Driver ==
+#summary Benchmark driver for executing and evaluation the queries on top of the datasets
+
+= Benchmark Driver =
 
 In order to help potential users executing the benchmark in a standardized way, we have implemented a generic Java benchmark driver in Open Source. The driver provides an integrated execution engine for different benchmark scenarios and is highly congurable and customizable. Using the Sesame API as a mediator, it offers support for local repositories, SPARQL endpoints, federation, and Linked Data. New systems that are not using the Sesame API
 can easily be integrated by implementing the generic Sesame interfaces.
