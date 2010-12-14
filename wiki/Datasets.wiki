@@ -47,3 +47,11 @@ In the following we provide information about the datasets used in FedBench. Thi
 || Persondata || 357k || [http://downloads.dbpedia.org/3.5.1/en/persondata_en.nt.bz2 persondata_en.nt] ||
 || Links to New York Times || 8.5k || [http://downloads.dbpedia.org/3.5.1/links/nyt_links.nt.bz2 nyt_links.nt] ||
 || Links to LinkedGeoData || 53k || [http://downloads.dbpedia.org/3.5.1/links/DBpedia-LGD.nt.bz2 DBpedia-LGD_en.nt] ||
+
+
+
+== Basic statistics taken from the paper ===
+
+(more to follow)
+
+http://fbench.googlecode.com/svn/trunk/Misc/statistics_datasets.png
