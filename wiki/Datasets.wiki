@@ -6,7 +6,8 @@
 In the following we provide information about the datasets used in FedBench. This document summarizes basic statistics and download links to versioned archives for your convenience. In case no versioned archive is available on the web we host the dataset on our servers. Login information to this service are available on request (please write a short email to one of the project members).
  
 
-== Cross Domain ==
+== Data Collections ==
+=== Cross Domain ===
 
 || _*Dataset*_ || _*Version*_ || _*Domain*_ || _*Triples(k)*_ || _*Download*_ ||
 || DBPedia subset || 3.5.1* || Generic || 43.6M || see table d) below ||
@@ -17,7 +18,7 @@ In the following we provide information about the datasets used in FedBench. Thi
 || SW Dog Food || 2010-11-25 || SW Conferences and publications || 104k || [http://iwb.fluidops.com:7777/datasets/semanticwebdog-2010-11-25.zip SW Dog Food dump] ||
 
 
-== Life Science Domain ==
+=== Life Science Domain ===
 
 || _*Dataset*_ || _*Version*_ || _*Domain*_ || _*Triples(k)*_ || _*Download*_ ||
 || DBPedia subset || 3.5.1* || Generic || 43.6M || see table below ||
@@ -26,13 +27,13 @@ In the following we provide information about the datasets used in FedBench. Thi
 || ChEBI || 2010-11-25 || Compounds || 7.33M || [http://iwb.fluidops.com:7777/datasets/chebi-2010-11-26.zip ChEBI dump]||
 
 
-== SP2Bench ==
+=== SP2Bench ===
 
 || _*Dataset*_ || _*Version*_ || _*Domain*_ || _*Triples(k)*_ || _*Download*_ ||
 || SP2B-10M || v1.01 || Bibliographic (synthetic) || 10M || [http://iwb.fluidops.com:7777/datasets/SP2B-10M-federated.tar.gz SP2B-10M dump] ||
 
 
-== DBPedia 3.5.1 Subset ==
+=== DBPedia 3.5.1 Subset ===
 
 || _*Dataset*_ || _*Triples(k)*_ || _*Download*_ ||
 || DBPedia Ontology || 5.5k || [http://downloads.dbpedia.org/3.5.1/dbpedia_3.5.1.owl.bz2 dbpedia_3.5.1.owl] ||
@@ -49,9 +50,12 @@ In the following we provide information about the datasets used in FedBench. Thi
 || Links to LinkedGeoData || 53k || [http://downloads.dbpedia.org/3.5.1/links/DBpedia-LGD.nt.bz2 DBpedia-LGD_en.nt] ||
 
 
+== Basic Dataset Statistics ===
 
-== Basic statistics taken from the paper ===
 
-(more to follow)
+The table below surveys  basic statistics of the FedBench datasets, which we extracted by running extraction scripts and SPARQL queries over local dataset dumps, including the number of triples, distinct subjects, predicates, objects, and information about the
+used vocabulary and links to other data sources. 
 
 http://fbench.googlecode.com/svn/trunk/Misc/statistics_datasets.png
+
+We will publish more statistics in the coming days.
