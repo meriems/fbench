@@ -251,7 +251,7 @@ The following queries are for the SP2Bench data set and for convenience the foll
  * *swrc:* <http://swrc.ontoware.org/ontology#>
  * *xsd:* <http://www.w3.org/2001/XMLSchema#>
 
- * *SP2Bench Q1:*
+ * *SP2Bench Q1:* Return the year of publication of Journal 1 (1940).
 
 {{{
 SELECT ?yr
@@ -263,7 +263,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q2:*
+ * *SP2Bench Q2:* Extract all inproceedings with properties dc:creator, bench:booktitle, dc:title, swrc:pages, dcterms:partOf, rdfs:seeAlso, foaf:homepage dcterms:issued, and optionally bench:abstract, including these properties, ordered by year.
 
 {{{
 SELECT ?inproc ?author ?booktitle ?title 
@@ -285,7 +285,7 @@ WHERE {
 ORDER BY ?yr
 }}}
 
- * *SP2Bench Q3a:*
+ * *SP2Bench Q3a:* Select all articles with property swrc:pages.
 
 {{{
 SELECT ?article
@@ -296,7 +296,7 @@ WHERE {
 }
 }}}
 
- * *SP2Bench Q3b:*
+ * *SP2Bench Q3b:* Select all articles with property swrc:month.
 
 {{{
 SELECT ?article
@@ -308,7 +308,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q3c:*
+ * *SP2Bench Q3c:* Select all articles with property swrc:isbn.
 
 {{{
 SELECT ?article
@@ -320,7 +320,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q4a:*
+ * *SP2Bench Q4a:* Select all distinct pairs of article author names for authors that have published in the same journal.
 
 {{{
 SELECT DISTINCT ?name1 ?name2 
@@ -338,7 +338,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q4b:*
+ * *SP2Bench Q4b:* (different version of Q4a)
 
 {{{
 SELECT DISTINCT ?person ?name
@@ -353,7 +353,7 @@ WHERE {
 }
 }}}
 
- * *SP2Bench Q5:*
+ * *SP2Bench Q5:* Return the names of all persons that occur as author of at least one inproceeding and at least one article.
 
 {{{
 SELECT DISTINCT ?person ?name
@@ -367,7 +367,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q6:*
+ * *SP2Bench Q6:* Return the names of all persons that occur as author of at least one inproceeding and at least one article (same as Q5a).
 
 {{{
 SELECT ?yr ?name ?document
@@ -387,7 +387,7 @@ WHERE {
 }
 }}}
 
- * *SP2Bench Q7:*
+ * *SP2Bench Q7:* Return the titles of all papers that have been cited at least once, but not by any paper that has not been cited itself.
 
 {{{
 SELECT DISTINCT ?title
@@ -412,7 +412,7 @@ WHERE {
 }
 }}}
 
- * *SP2Bench Q8:*
+ * *SP2Bench Q8:* Compute authors that have published with Paul Erdoes, or with an author that has published with Paul Erdoes.
 
 {{{
 SELECT DISTINCT ?name
@@ -439,7 +439,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q9:*
+ * *SP2Bench Q9:* Return incoming and outcoming properties of persons.
 
 {{{
 SELECT DISTINCT ?predicate
@@ -455,7 +455,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q10:*
+ * *SP2Bench Q10:* Return all subjects that stand in any relation to Paul Erdoes. In our scenario, the query might also be formulated as "Return publications and venues in which Paul Erdoes is involved either as author or as editor".
 
 {{{
 SELECT ?subject ?predicate
@@ -465,7 +465,7 @@ WHERE {
 }}}
 
 
- * *SP2Bench Q11:*
+ * *SP2Bench Q11:* Return (up to) 10 electronic edition URLs starting from the 51th publication, in lexicographical order.
 
 {{{
 SELECT ?ee
