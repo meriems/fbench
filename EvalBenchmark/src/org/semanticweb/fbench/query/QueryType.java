@@ -16,6 +16,8 @@ public enum QueryType {
 	
 	SP2B("SP2B queries", "SP2B"),
 	
+	LINKEDDATA("Linked Data queries", "linked-data"),
+	
 	CUSTOM1("Custom SPARQL query", "custom1");
 	
 	
@@ -32,5 +34,9 @@ public enum QueryType {
 	
 	public String toString() {
 		return desc;
+	}
+	
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
