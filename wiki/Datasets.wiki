@@ -53,8 +53,7 @@ In the following we provide information about the datasets used in FedBench. Thi
 == Basic Dataset Statistics ===
 
 
-The table below surveys  basic statistics of the FedBench datasets, which we extracted by running extraction scripts and SPARQL queries over local dataset dumps, including the number of triples, distinct subjects, predicates, objects, and information about the
-used vocabulary and links to other data sources. 
+The table below surveys  basic statistics of the FedBench datasets, which we extracted by running extraction scripts and SPARQL queries over local dataset dumps, including the number of triples, distinct subjects, predicates, objects, types, and links to other data sources. 
 
 http://fbench.googlecode.com/svn/trunk/Misc/statistics_datasets.png
 
