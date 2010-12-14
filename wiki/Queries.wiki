@@ -9,7 +9,7 @@ In this document we summarize the queries used in FedBench and group them along 
  * [Queries#SP2B_(SP) SP2B Queries (SP)]
  * [Queries#Linked_Data_(LD) Linked Data (LD)]
 
-We furthermore indicate the required [Datasets] for the given query set.
+We furthermore indicate the required [Datasets] for the given query set. Note that the queries can also be downloaded [http://code.google.com/p/fbench/downloads/list here].
 
 
 = Classification =
