@@ -141,7 +141,7 @@ Queries LS1 through LS7 are queries for the life science domain datasets and for
 
 Note that all queries can be downloaded in the Download section.
 
- * *Query LS1:* Find all drugs from {\tt Drugbank} and {\tt DBpedia} with their melting points.
+ * *Query LS1:* Find all drugs from Drugbank and DBpedia with their melting points.
 
 {{{
 SELECT ?drug ?melt WHERE {
