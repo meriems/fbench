@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -62,6 +63,7 @@ public class SparqlServlet2 extends HttpServlet {
 	protected static Executor executor = Executors.newCachedThreadPool();
 	protected static LinkedList<QueryRequest> queryRequestQueue = new LinkedList<QueryRequest>();
 	protected static int nextRequestId = 1;
+	protected static HashSet<QueryRequest> activeQueries = new HashSet<QueryRequest>();
 	
 	protected List<WorkerThread> workers = new ArrayList<WorkerThread>();
 	protected int nWorkers;
@@ -141,33 +143,28 @@ public class SparqlServlet2 extends HttpServlet {
 	private void handleQuery(String query, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
 		
 		int currentRequest;
+		QueryRequest qr;
 		synchronized (queryRequestQueue) {
 			currentRequest = nextRequestId++;
-			QueryRequest qr = new QueryRequest(currentRequest, query, req, resp, outputStream);
+			qr = new QueryRequest(currentRequest, query, req, resp, outputStream);
+			activeQueries.add(qr);
 			queryRequestQueue.addLast(qr);
 			// notify all
 			queryRequestQueue.notify();
-		
-//			synchronized (waitingWorkers) {
-//				if (!waitingWorkers.isEmpty()) {
-//					WorkerThread w = waitingWorkers.removeFirst();
-//					synchronized (w) {
-//						w.notify();
-//					}
-//				}
-//			}
 		}
 				
 		synchronized (resp) {
 			try {
-				resp.wait();
+				if (!qr.isDone())
+					resp.wait();				
 			} catch (InterruptedException e) {
 				log.warn("Request " + currentRequest + " was interrupted.");
 				// TODO check if threads working on this are running, if yes, kill them
 				// XXX are parallel child threads killed as well?
+			} finally {
+				activeQueries.remove(qr);
 			}
-		}
-		
+		}		
 	}
 	
 	
@@ -287,6 +284,7 @@ public class SparqlServlet2 extends HttpServlet {
     	public final HttpServletRequest req;
     	public final HttpServletResponse resp;
     	public final ServletOutputStream outputStream;
+    	public boolean done;
 		
     	public QueryRequest(int requestID, String query, 
 				HttpServletRequest req, HttpServletResponse resp,
@@ -297,9 +295,16 @@ public class SparqlServlet2 extends HttpServlet {
 			this.req = req;
 			this.resp = resp;
 			this.outputStream = outputStream;
+			this.done = false;
 		}
     	
+    	public boolean isDone() {
+    		return done;
+    	}
     	
+    	public void done() {
+    		done = true;
+    	}
     }
     
     
@@ -343,6 +348,7 @@ public class SparqlServlet2 extends HttpServlet {
     				else if (qr.requestID%10==1)
     					log.info("Status Information: Current request is " + qr.requestID);	// log every 10 statement
 	    			processQuery(qr.query, qr.requestID, qr.req, qr.resp, qr.outputStream);
+	    			qr.done();
 	    			synchronized (qr.resp) {
 	    				qr.resp.notify();
 	    			}
@@ -441,8 +447,9 @@ public class SparqlServlet2 extends HttpServlet {
     	        }
     	        
     	        outputStream.flush();
+    	        resp.flushBuffer();
     	        outputStream.close();
-
+ 
     	    }        
     	    catch (Exception e) {
 
@@ -528,14 +535,19 @@ public class SparqlServlet2 extends HttpServlet {
     		while (!Thread.interrupted()) {
     			
     			int _idle;
+    			int req;
     			synchronized (queryRequestQueue) {
     				_idle = idleWorkers;
+    				req = queryRequestQueue.size();
     			}
+    			StringBuilder sb = new StringBuilder();
+    			for (QueryRequest q : activeQueries)
+    				sb.append(q.requestID).append(";");
     			
-    			System.out.println("Worker Status: " + _idle + " idle");
+    			System.out.println("Worker Status: " + _idle + " idle, requests in queue: " + req + ", active requests: " + sb.toString());
     			
     			try {
-					Thread.sleep(500);
+					Thread.sleep(5000);
 				} catch (InterruptedException e) {
 					// ignore
 				}

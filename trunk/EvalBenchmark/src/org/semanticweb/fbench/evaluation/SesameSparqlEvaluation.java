@@ -13,6 +13,7 @@ import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.URIImpl;
+import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
@@ -75,6 +76,19 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		reinitializeSystem();		
 	}
 	
+	@Override
+	protected void queryRunEnd(Query query, boolean error) {
+		if (error)
+			return;
+		
+		try {
+			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 5000ms.");
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// ignore
+		}
+	}
+	
 	
 	protected void reinitializeSystem() throws Exception {
 		log.info("Reinitializing system...");
@@ -96,7 +110,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		} catch (Exception e) {
 			log.warn("Error closing connections: " +e.getMessage());
 		}
-			sailRepo.shutDown();
+		sailRepo.shutDown();
 		
 		log.info("Deleting possible locks in the file system.");
 		for (File repoLoc : repoLocs) {
@@ -119,9 +133,20 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		Thread.sleep(extraWait);
 		
 		log.debug("Loading repositories from scratch.");
-		sailRepo = SesameRepositoryLoader.loadRepositories(new VoidReportStream());
+		sailRepo = loadRepository();
 		conn = sailRepo.getConnection();
 		log.debug("Reinitialize done.");
+	}
+	
+	/**
+	 * Method to load repositories, used in reinitialize.
+	 * 
+	 * Subclasses can overwrite this
+	 * @return
+	 * @throws Exception
+	 */
+	protected SailRepository loadRepository() throws Exception {
+		return SesameRepositoryLoader.loadRepositories(new VoidReportStream());
 	}
 	
 	protected boolean deleteFolder(File folder) {

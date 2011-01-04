@@ -112,6 +112,13 @@ public abstract class MemoryReportStream implements ReportStream {
 			list = new ArrayList<QueryStats>();
 			queryEvaluation.put(query, list);
 		}
+		// check for duplicate results
+		for (QueryStats qs : list) {
+			if (qs.run==run) {
+				qs.duration = qs.duration==-1 || duration==-1 ? -1 : qs.duration;
+				return;
+			}
+		}
 		list.add( new QueryStats(query, duration, run, numberOfResults));		
 	}
 
