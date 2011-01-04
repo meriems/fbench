@@ -122,10 +122,12 @@ public abstract class Evaluation {
 				long duration = System.currentTimeMillis() - start;
 				earlyResults.queryDone();
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
+				queryRunEnd(q, false);
 			} catch (Exception e) {
 				report.endQueryEvaluation(q, 1, -2, -1);
 				log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 				log.debug("Exception details:", e);
+				queryRunEnd(q, true);
 			}
 		}
 		
@@ -156,14 +158,16 @@ public abstract class Evaluation {
 					long duration = System.currentTimeMillis() - start;
 					earlyResults.queryDone();
 					report.endQueryEvaluation(q, run, duration, numberOfResults);
+					queryRunEnd(q, false);
 				} catch (Exception e) {
 					report.endQueryEvaluation(q, run, -2, -1);
 					log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
 					log.debug("Exception details:", e);
+					queryRunEnd(q, true);
 				}
 			}
 			long runDuration = System.currentTimeMillis() - runStart;
-			report.endRun(run, evalRuns, runDuration);
+			report.endRun(run, evalRuns, runDuration);			
 		}
 		
 		long overallDuration = System.currentTimeMillis() - evalStart;
@@ -213,7 +217,7 @@ public abstract class Evaluation {
 					}
 					if (eval.isError())
 						reInit = true;
-
+					
 				} catch (InterruptedException e) {
 					log.info("Execution of query " + q.getIdentifier() + " resulted in timeout.");
 					report.endQueryEvaluation(q, run, -1, -1);
@@ -225,6 +229,7 @@ public abstract class Evaluation {
 					reInit = true;
 				}
 				earlyResults.queryDone();
+				queryRunEnd(q, reInit);
 			}
 			long runDuration = System.currentTimeMillis() - runStart;
 			report.endRun(run, evalRuns, runDuration);
@@ -283,4 +288,16 @@ public abstract class Evaluation {
 	 */
 	public abstract int runQueryDebug(Query query, boolean showResult) throws Exception;
 	
+	
+	/**
+	 * This method is invoked when a query is run through. Can be used to introduce
+	 * a timeout after a query, e.g. for SPARQL this might be convenient to reduce
+	 * load
+	 * 
+	 * @param query
+	 * @param error
+	 */
+	protected void queryRunEnd(Query query, boolean error) { 
+		;		// behaviour can be implemented by sub classes
+	}	
 }

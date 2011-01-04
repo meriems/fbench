@@ -24,7 +24,7 @@ public class DelayRequestHandler implements RequestHandler {
 		try {
 			Thread.sleep(delay);
 		} catch (InterruptedException e) {
-			;	// no-op
+			; // no-op
 		}
 		
 		return true;

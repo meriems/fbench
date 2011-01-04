@@ -31,6 +31,7 @@ import org.semanticweb.fbench.query.Query;
  * Report configuration that writes RDF triples into result/result.rdf. RDF triples
  * can be visualized directly in the information workbench (tables, graphs, etc)
  * 
+ * Note that query triples are written to result/queries_%querySet%.nt
  * 
  * @author as
  *
@@ -151,14 +152,31 @@ public class RdfReportStream extends MemoryReportStream {
 	
 	protected void writeQueryTuples() throws Exception {
 		
+		MemoryStore ms = new MemoryStore();
+		SailRepository queryRepo = new SailRepository(ms);
+		queryRepo.initialize();
+		RepositoryConnection queryConn = repo.getConnection();
+		
 		for (Query q : queries) {
 			URI qURI = createQueryURI(q);
 			// {fbench:q.id; rdf:type; fbench:Query}
 			// {fbench:q.id; fbench:query-sparql; ".."}
-			conn.add( createStatement( qURI, RdfVocabulary.TYPE, RdfVocabulary.QUERY_TYPE));
-			conn.add( createStatement( qURI, RdfVocabulary.ID, vf.createLiteral(q.getIdentifier())));
-			conn.add( createStatement( qURI, RdfVocabulary.SPARQL, vf.createLiteral(q.getQuery())));
+			queryConn.add( createStatement( qURI, RdfVocabulary.TYPE, RdfVocabulary.QUERY_TYPE));
+			queryConn.add( createStatement( qURI, RdfVocabulary.ID, vf.createLiteral(q.getIdentifier())));
+			queryConn.add( createStatement( qURI, RdfVocabulary.SPARQL, vf.createLiteral(q.getQuery())));
 		}
+		
+		String file = Config.getConfig().getBaseDir() + "result\\queries_" + Config.getConfig().getProperty("querySet", "custom") + ".nt"; 
+		File outFile = new File(file);
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
+		RDFWriter wr = Rio.createWriter(RDFFormat.NTRIPLES, out);
+		wr.handleNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		queryConn.export(wr);
+		
+		out.flush();
+		out.close();
+		queryConn.close();
+		
 	}
 	
 	
