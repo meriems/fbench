@@ -1,3 +1,5 @@
+description = Centralized Store (Sesame) - Life Science Queries
+
 dataConfig = suites\\lifescience-domain\\config\\singleNative.ttl
 
 querySet = LIFESCIENCEDOMAIN

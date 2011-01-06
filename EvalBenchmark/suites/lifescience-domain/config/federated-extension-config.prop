@@ -1,0 +1,18 @@
+dataConfig = suites\\lifescience-domain\\config\\federated.ttl
+
+querySet = CUSTOM1
+
+evalRuns = 1
+
+timeout = 600000
+
+fill = false
+debugMode = true
+
+envConfig = suites\\lifescience-domain\\env.prop
+
+#evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
+#evaluationClass = org.semanticweb.fbench.evaluation.ExtensionSparqlEvaluation
+evaluationClass = org.semanticweb.fbench.evaluation.ExtensionEvaluation
+
+#reportStream = org.semanticweb.fbench.report.CsvReportStream2

@@ -1,3 +1,5 @@
+description = Endpoint Federation (AliBaba) Cross Domain Queries
+
 dataConfig = suites\\cross-domain\\config\\federated-sparql.ttl
 
 querySet = CROSSDOMAIN
@@ -9,4 +11,6 @@ timeout = 600000
 fill = false
 
 envConfig = suites\\cross-domain\\env.prop
+
+evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
 

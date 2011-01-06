@@ -1,3 +1,5 @@
+description = Local Federation (AliBaba) Cross Domain Queries
+
 dataConfig = suites\\cross-domain\\config\\federated.ttl
 
 querySet = CROSSDOMAIN

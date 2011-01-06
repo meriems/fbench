@@ -1,3 +1,5 @@
+description = Local Federation (AliBaba) SP2B Queries
+
 dataConfig = suites\\SP2B-10M\\config\\federated-sparql.ttl
 
 querySet = SP2B
