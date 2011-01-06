@@ -90,7 +90,8 @@ timeout = 0
 #     - CsvReportStream -> print result and load times into csv files
 #     - CombinedReportStream -> combination of the above Streams
 #	  - RdfReportStream -> generates RDF triples in N3 syntax
-#	  - CsvRdfReportStream -> RDF + CSV report
+#	  - CsvRdfReportStream -> RDF + CSV2 report
+#	  - CsvReportStream2 -> print result into more intuitive csv file
 #     
 #   Default values:
 #     - in debug mode: SimplePrintStream
@@ -115,7 +116,8 @@ envConfig = config\\env.prop
 #   used to extend functionality or to customize
 #
 #   Currently an implementation for Sesame is available (=default)
-evaluationClass = org.semanticweb.fbench.evaluation.SesameEvaluation
+#	Also: SesameSparqlEvaluation => starts local sparql servers if necessary
+evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
 
 
 ###
@@ -144,4 +146,16 @@ evaluationClass = org.semanticweb.fbench.evaluation.SesameEvaluation
 #	http://myEndpoint.com:80/sparql. Note that in the general case
 #   this URL is urlEncoded.
 #
-proxyUrl = http://localhost:2000/
+#proxyUrl = http://localhost:2000/
+
+
+###
+# description
+#   a short description for this benchmark. The description is used in RdfReportStream
+#   when benchmark mode is activated. This description is shown in the information
+# 	workbench when the result is published.
+#
+#	Example description: Endpoint Federation (Sesame) Cross Domain Queries
+#  
+# 
+description = Benchmark using Sesame Framework
