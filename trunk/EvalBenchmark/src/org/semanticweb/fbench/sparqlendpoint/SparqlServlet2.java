@@ -106,8 +106,13 @@ public class SparqlServlet2 extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp){
 
 		try {
-			ServletOutputStream outputStream = resp.getOutputStream();		
-			if (req.getParameter("query") != null){
+			ServletOutputStream outputStream = resp.getOutputStream();	
+			
+			// XXX document!!! requestCount get parameter is served!
+			if (req.getParameter("requestCount") != null) {
+				handleCountRequest(req, resp, outputStream);
+			}
+			else if (req.getParameter("query") != null){
 				String query = req.getParameter("query");
 				handleQuery(query, req, resp, outputStream);
 			}
@@ -165,6 +170,31 @@ public class SparqlServlet2 extends HttpServlet {
 				activeQueries.remove(qr);
 			}
 		}		
+	}
+	
+	
+	private void handleCountRequest(HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
+		
+		log.info("Incoming request for count of past SPARQL queries");
+		
+		int count;
+		synchronized (queryRequestQueue) {
+			count = nextRequestId-1;
+			nextRequestId = 0;
+		}
+		
+		log.info("Reporting #requests= " + count + ", resetting counter to 0");
+		try {
+			resp.setStatus(200);
+			outputStream.print(count);
+			outputStream.flush();
+			outputStream.close();
+		} catch (Exception e) {
+			resp.setStatus(400);
+			log.error("Error while sending count report", e);
+		}
+		
+		
 	}
 	
 	

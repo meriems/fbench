@@ -8,10 +8,10 @@ import org.semanticweb.fbench.query.QueryType;
 
 
 /**
- * Combined report stream for rdf and cvs reporting. Uses the delegate pattern. 
+ * Combined report stream for rdf and csv reporting. Uses the delegate pattern. 
  * 
  * @see RdfReportStream
- * @see CsvReportStream
+ * @see CsvReportStream2
  * 
  * @author as
  *
@@ -20,7 +20,7 @@ public class CsvRdfReportStream implements ReportStream {
 
 	
 	protected RdfReportStream rdf = new RdfReportStream();
-	protected CsvReportStream cvs = new CsvReportStream();
+	protected CsvReportStream2 cvs = new CsvReportStream2();
 	
 	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
 			int numberOfQueries, int numberOfRuns) {

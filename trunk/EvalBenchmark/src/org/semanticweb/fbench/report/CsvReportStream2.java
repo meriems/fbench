@@ -8,13 +8,47 @@ import java.util.List;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.query.Query;
 
+
+/**
+ * Report query evaluation to %baseDir%\result\result.csv
+ * Report loadTimes to file at %baseDir%\result\loadtimes.csv
+ * 
+ * Format:
+ * <code>
+ * eval: Query;run1;run2;...;runN;avg;numResults;minRes;maxRes
+ * loadTimes: id;name;location;type;duration;
+ * <code>
+ * 
+ * @author as
+ *
+ */
 public class CsvReportStream2 extends MemoryReportStream {
 
 	@Override
 	public void writeData() throws Exception {
+		writeLoadTimes();
+		writeResult();
+	}
+	
+	
+	private void writeLoadTimes() throws Exception {
 		
+		String file2 = Config.getConfig().getBaseDir() + "result\\loadTimes.csv"; 
+		BufferedWriter loadOut = new BufferedWriter( new FileWriter(file2));
+		loadOut.append("id;name;location;type;duration;\r\n");
 		
-		String file = Config.getConfig().getBaseDir() + "result\\result_ext.csv"; 
+		for (DatasetStats d : datasetStats) {
+			loadOut.append(d.id+";"+d.name+";"+d.location+";"+d.type+";"+d.loadTime+";\r\n");
+		}
+		
+		loadOut.flush();
+		loadOut.close();
+	}
+	
+	
+	private void writeResult() throws Exception {
+		
+		String file = Config.getConfig().getBaseDir() + "result\\result.csv"; 
 		File outFile = new File(file);
 		BufferedWriter bw = new BufferedWriter( new FileWriter( outFile ));
 		

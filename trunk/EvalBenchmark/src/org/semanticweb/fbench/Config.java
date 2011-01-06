@@ -15,6 +15,7 @@ import org.semanticweb.fbench.report.CsvRdfReportStream;
 import org.semanticweb.fbench.report.NoOpEarlyResultsMonitor;
 import org.semanticweb.fbench.report.RdfReportStream;
 import org.semanticweb.fbench.report.SimpleReportStream;
+import org.semanticweb.fbench.report.SparqlQueryRequestReport;
 
 
 
@@ -248,6 +249,16 @@ public class Config {
 	/**
 	 * 
 	 * @return
+	 * 		the description setting, i.e. a meaningful short description. Ex: "Endpoint Federation (Sesame) Cross Domain Queries"
+	 * 		default null
+	 */
+	public String getDescription() {
+		return props.getProperty("description");
+	}
+	
+	/**
+	 * 
+	 * @return
 	 * 		true iff a proxyUrl is specified
 	 */
 	public boolean useGlobalProxy() {
@@ -263,5 +274,21 @@ public class Config {
 	 */
 	public String getProxyUrl() {
 		return props.getProperty("proxyUrl");
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 * 		the sparqlRequestReport setting, i.e. if the number of requests sent to the endpoint
+	 *  	shall be reported per query (see {@link SparqlQueryRequestReport}) 
+	 *  	
+	 *  	true: report stats to result\sparql_stats.csv
+	 *  	false: disabled
+	 *  
+	 *  	default true
+	 */
+	public boolean isSparqlRequestReport() {
+		return Boolean.parseBoolean(props.getProperty("sparqlRequestReport", "false"));
 	}
 }

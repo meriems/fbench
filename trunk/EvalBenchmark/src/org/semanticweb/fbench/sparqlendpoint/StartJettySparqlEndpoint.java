@@ -43,6 +43,8 @@ public class StartJettySparqlEndpoint {
 			System.setProperty("log4j.configuration", "file:config/log4j-sparql.properties");
 		log = Logger.getLogger(StartJettySparqlEndpoint.class);
 		
+		System.setProperty("org.mortbay.io.nio.MAX_SELECTS", "50000");	// XXX check if this fixes the busy bugs
+		
 		writePIDFile();	// write a file of %PID%.pid such that process can be killed if it does not terminate
 		
         new GracefullShutdownThread().start();
