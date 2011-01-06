@@ -11,7 +11,7 @@ import org.semanticweb.fbench.query.QueryType;
  * Combined report stream for simple and cvs reporting. Uses the delegate pattern. 
  * 
  * @see SimpleReportStream
- * @see CsvReportStream
+ * @see CsvReportStream2
  * 
  * @author as
  *
@@ -20,52 +20,52 @@ public class CombinedReportStream implements ReportStream {
 
 	
 	protected SimpleReportStream simple = new SimpleReportStream();
-	protected CsvReportStream cvs = new CsvReportStream();
+	protected CsvReportStream2 csv = new CsvReportStream2();
 	
 	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
 			int numberOfQueries, int numberOfRuns) {
-		cvs.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
+		csv.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
 		simple.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
 	}
 	public void beginQueryEvaluation(Query query, int run) {
-		cvs.beginQueryEvaluation(query, run);
+		csv.beginQueryEvaluation(query, run);
 		simple.beginQueryEvaluation(query, run);
 	}
 	public void beginRun(int run, int totalNumberOfRuns) {
-		cvs.beginRun(run, totalNumberOfRuns);
+		csv.beginRun(run, totalNumberOfRuns);
 		simple.beginRun(run, totalNumberOfRuns);
 	}
 	public void close() throws Exception {
-		cvs.close();
+		csv.close();
 		simple.close();
 	}
 	public void endEvaluation(long duration) {
-		cvs.endEvaluation(duration);
+		csv.endEvaluation(duration);
 		simple.endEvaluation(duration);
 	}
 	public void endQueryEvaluation(Query query, int run, long duration,
 			int numberOfResults) {
-		cvs.endQueryEvaluation(query, run, duration, numberOfResults);
+		csv.endQueryEvaluation(query, run, duration, numberOfResults);
 		simple.endQueryEvaluation(query, run, duration, numberOfResults);
 	}
 	public void endRun(int run, int totalNumberOfRuns, long duration) {
-		cvs.endRun(run, totalNumberOfRuns, duration);
+		csv.endRun(run, totalNumberOfRuns, duration);
 		simple.endRun(run, totalNumberOfRuns, duration);
 	}
 	public void initializationBegin() {
-		cvs.initializationBegin();
+		csv.initializationBegin();
 		simple.initializationBegin();
 	}
 	public void initializationEnd(long duration) {
-		cvs.initializationEnd(duration);
+		csv.initializationEnd(duration);
 		simple.initializationEnd(duration);
 	}
 	public void open() throws Exception {
-		cvs.open();
+		csv.open();
 		simple.open();
 	}
 	public void reportDatasetLoadTime(String id, String name, String location, String type, long duration) {
-		cvs.reportDatasetLoadTime(id, name, location, type, duration);
+		csv.reportDatasetLoadTime(id, name, location, type, duration);
 		simple.reportDatasetLoadTime(id, name, location, type, duration);
 	}
 }

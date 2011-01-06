@@ -34,6 +34,8 @@ public class RdfVocabulary {
 	public static URI SOFTWARE =  createFURI("software");
 	public static URI NOTE =  createFURI("note");
 	public static URI HARDDISK =  createFURI("harddisk");
+	public static URI ORGANIZATION =  createFURI("organization");
+	public static URI TIMEOUT =  createFURI("timeout");
 	
 	/* Datastats (object/data) properties */
 	public static URI DATASETSTATS_TYPE = createFURI("Datasetstats");

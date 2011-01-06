@@ -21,7 +21,9 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
 import org.semanticweb.fbench.Config;
+import org.semanticweb.fbench.misc.Utils;
 import org.semanticweb.fbench.query.Query;
+import org.semanticweb.fbench.report.SparqlQueryRequestReport;
 import org.semanticweb.fbench.report.VoidReportStream;
 
 
@@ -39,8 +41,10 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	public static Logger log = Logger.getLogger(SesameSparqlEvaluation.class);
 
 	protected int runningServers = 0;
-	protected long extraWait = 20000;	// wait time for servers
-	protected List<File> repoLocs;
+	protected long extraWait = 20000;					// wait time for servers
+	protected List<RepoInformation> repoInformation;	// repository information (id, location for local servers, url)
+	
+	protected SparqlQueryRequestReport sparqlReport = null;		// if not null, this report is used to collect request count stats
 	
 	public SesameSparqlEvaluation() {
 		super();
@@ -49,6 +53,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	@Override
 	public void finish() throws Exception {
 		super.finish();
+		if (sparqlReport!=null)
+			sparqlReport.finish();
 		File cFile = new File("_shutdown");
 		cFile.createNewFile();
 		Thread.sleep(3000);	// give servers the chance to see the file
@@ -62,7 +68,12 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		for (File f : new File(".").listFiles())
 			if (f.getName().endsWith(".pid"))
 				f.delete();
-		repoLocs = getRepoLocs();
+		repoInformation = getRepoInformation();
+		
+		if (Config.getConfig().isSparqlRequestReport()) {
+			sparqlReport = new SparqlQueryRequestReport();
+			sparqlReport.init(repoInformation);
+		}
 		reinitializeSystem();
 	}
 
@@ -76,8 +87,18 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		reinitializeSystem();		
 	}
 	
+	
 	@Override
 	protected void queryRunEnd(Query query, boolean error) {
+		
+		if (sparqlReport!=null) {
+			try {
+				sparqlReport.handleQuery(query);
+			} catch (IOException e) {
+				// ignore
+			}
+		}
+		
 		if (error)
 			return;
 		
@@ -87,6 +108,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		} catch (InterruptedException e) {
 			// ignore
 		}
+		
+		
 	}
 	
 	
@@ -105,16 +128,19 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 			runningServers=0;
 		}
 		
-		try {
-			conn.close();
-		} catch (Exception e) {
-			log.warn("Error closing connections: " +e.getMessage());
-		}
+		
+		log.info("Trying to close connection: " + conn.getClass().getCanonicalName() + " (" + conn.getSailConnection().getClass() + ")");
+		boolean _closed = Utils.closeConnectionTimeout(conn, 10000);
+		log.info( _closed ? "Connection closed successfully." : "Error closing connection, timeout occured.");
+				
+		log.info("Trying to shutdown repository.");
 		sailRepo.shutDown();
 		
 		log.info("Deleting possible locks in the file system.");
-		for (File repoLoc : repoLocs) {
-			for (File f : repoLoc.listFiles())
+		for (RepoInformation r : repoInformation) {
+			if (r.repoLoc == null)
+				continue;
+			for (File f : r.repoLoc.listFiles())
 				if (f.isDirectory() && f.getName().equals("lock")) {
 					if (!deleteFolder(f))
 						log.fatal("Lock folder " + f.getAbsolutePath() + " could not be deleted!");
@@ -123,8 +149,10 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		
 		log.info("Starting server processes ... ");
 		int port = 10000;
-		for (File repoLoc : repoLocs) {
-			startSparqlServer(repoLoc, port++);
+		for (RepoInformation r : repoInformation) {
+			if (r.repoLoc == null)
+				continue;
+			startSparqlServer(r.repoLoc, port++);
 			runningServers++;
 		}
 				
@@ -198,8 +226,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	}
 	
 	
-	protected List<File> getRepoLocs() throws RDFParseException, RDFHandlerException, IOException {
-		List<File> res = new ArrayList<File>();
+	protected List<RepoInformation> getRepoInformation() throws RDFParseException, RDFHandlerException, IOException {
+		List<RepoInformation> res = new ArrayList<RepoInformation>();
 				
 		final Graph graph = new GraphImpl();
 		final String dataConfig = Config.getConfig().getDataConfig();
@@ -208,19 +236,48 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		parser.setRDFHandler(handler);
 		
 		parser.parse(new FileReader(dataConfig), "http://fluidops.org/config#");
-		Iterator<Statement> iter = graph.match(null, new URIImpl("http://fluidops.org/config#localRepoLoc"), null);
-		Statement s;
+		Iterator<Statement> iter = graph.match(null, new URIImpl("http://fluidops.org/config#store"), null);
+		
 		while (iter.hasNext()){
-			s = iter.next();
-			Value repType = s.getObject();
+			String id = null;
+			File repoLoc = null;
+			String url = null;
+			Statement s = iter.next();
 			
-			File nextRepo = new File(repType.stringValue());
-			log.debug("Found local repoLoc " + nextRepo.getPath());
-			res.add(nextRepo);
+			// id is the subject:
+			id = s.getSubject().stringValue();
+						
+			Iterator<Statement> tmpIter;
+			
+			// repoLoc is http://fluidops.org/config#localRepoLoc
+			tmpIter = graph.match(s.getSubject(), new URIImpl("http://fluidops.org/config#localRepoLoc"), null);
+			if (tmpIter.hasNext()) {
+				repoLoc = new File(tmpIter.next().getObject().stringValue());
+				log.debug("Found local repoLoc " + repoLoc.getPath());
+			}
+			
+			// url is http://fluidops.org/config#SPARQLEndpoint
+			tmpIter = graph.match(s.getSubject(), new URIImpl("http://fluidops.org/config#SPARQLEndpoint"), null);
+			if (tmpIter.hasNext()) {
+				url = tmpIter.next().getObject().stringValue();
+			}
+			
+			res.add( new RepoInformation(id, url, repoLoc) );
 		}
 		return res;
 	}
 	
+	public class RepoInformation {
+		public String id;
+		public String url;
+		public File repoLoc;
+		public RepoInformation(String id, String url, File repoLoc) {
+			super();
+			this.id = id;
+			this.url = url;
+			this.repoLoc = repoLoc;
+		}
+	}
 	
 	protected class SimpleRDFHandler implements RDFHandler {
 

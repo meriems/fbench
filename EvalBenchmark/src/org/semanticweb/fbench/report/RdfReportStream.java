@@ -95,7 +95,24 @@ public class RdfReportStream extends MemoryReportStream {
 		conn.add( createStatement(iURI, RdfVocabulary.DATE, vf.createLiteral( DatatypeFactory.newInstance().newXMLGregorianCalendar(evaluationDate))));
 		conn.add( createStatement(iURI, RdfVocabulary.MODE, vf.createLiteral( (Config.getConfig().isFill() ? "fill" : "benchmark"))));
 		conn.add( createStatement(iURI, RdfVocabulary.DATACONFIG, vf.createLiteral( (Config.getConfig().getDataConfig()))));
-		conn.add( createStatement(iURI, RdfVocabulary.DESCRIPTION, vf.createLiteral( env.getProperty("description", "n/a"))));
+
+		
+		// description:
+		// fill mode: "Fill %ds.id" (=location name)"
+		// benchmark: %description% (from config) (otherwise "Benchmark %configName% - Queryset") 
+		String description;
+		if (Config.getConfig().isFill()) {
+			DatasetStats ds = datasetStats.get(0);
+			description = "Fill " + ds.id;
+		} else {
+			String tmpDesc = Config.getConfig().getDescription();
+			if (tmpDesc==null) {
+				String dsName = new File(Config.getConfig().getDataConfig()).getName();
+				description = "Benchmark " + dsName + " on " + Config.getConfig().getProperty("querySet").toLowerCase() + " queries"; 
+			} else
+				description = tmpDesc;
+		}
+		conn.add( createStatement(iURI, RdfVocabulary.DESCRIPTION, vf.createLiteral( description )));
 		
 		// other: memory, operating system 
 		conn.add( createStatement(iURI, RdfVocabulary.MEMORY, vf.createLiteral( env.getProperty("memory", "n/a"))));
@@ -104,6 +121,9 @@ public class RdfReportStream extends MemoryReportStream {
 		conn.add( createStatement(iURI, RdfVocabulary.SOFTWARE, vf.createLiteral( env.getProperty("software", "n/a"))));
 		conn.add( createStatement(iURI, RdfVocabulary.HARDDISK, vf.createLiteral( env.getProperty("harddisk", "n/a"))));
 		conn.add( createStatement(iURI, RdfVocabulary.NOTE, vf.createLiteral( env.getProperty("note", "n/a"))));
+		conn.add( createStatement(iURI, RdfVocabulary.ORGANIZATION, vf.createLiteral( env.getProperty("organization", "n/a"))));
+		String timeout = Config.getConfig().isFill() ? "n/a" : Config.getConfig().getTimeout() + "";
+		conn.add( createStatement(iURI, RdfVocabulary.TIMEOUT, vf.createLiteral( timeout )));
 	}
 	
 	

@@ -5,6 +5,10 @@ import java.util.GregorianCalendar;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.log4j.Logger;
+import org.openrdf.repository.RepositoryConnection;
+import org.openrdf.repository.RepositoryException;
+
 public class Utils {
 
 	public static String dateToXsd(Calendar calendar) {
@@ -22,6 +26,22 @@ public class Utils {
 	}
 
 
+	public static boolean closeConnectionTimeout(final RepositoryConnection conn, long timeout) {
+		TimedInterrupt t = new TimedInterrupt();
+		
+		return t.run( new Runnable() {
+			@Override
+			public void run() {
+				try {
+					conn.close();
+					
+				} catch (RepositoryException e) {
+					Logger.getLogger(this.getClass()).error("Error closing conenction: " + e.getMessage());
+				}						
+			}
+		}, timeout);
+	}
+	
 	
 	
 	public static void main(String[] args) {
