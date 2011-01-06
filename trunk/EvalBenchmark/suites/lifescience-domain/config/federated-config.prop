@@ -1,6 +1,8 @@
+description = Local Federation (AliBaba) Life Science Queries
+
 dataConfig = suites\\lifescience-domain\\config\\federated.ttl
 
-querySet = LIFESCIENCE
+querySet = LIFESCIENCEDOMAIN
 
 evalRuns = 3
 
