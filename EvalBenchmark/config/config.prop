@@ -159,3 +159,17 @@ evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
 #  
 # 
 description = Benchmark using Sesame Framework
+
+
+###
+# sparqlRequestReport
+#	 boolean flag indicating whether the number of requests sent to the endpoint
+#    shall be reported per query (see SparqlQueryRequestReport). Note that this
+#	 report works only for local SPARQL endpoints (SparqlServlet2) and the evaluation
+#	 class SesameSparqlEvaluation
+#  	
+#	 true: report stats to result\sparql_stats.csv
+#  	 false: disabled
+#
+#  	 default false
+#sparqlRequestReport = true
