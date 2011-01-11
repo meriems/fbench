@@ -175,7 +175,7 @@ public class RdfReportStream extends MemoryReportStream {
 		MemoryStore ms = new MemoryStore();
 		SailRepository queryRepo = new SailRepository(ms);
 		queryRepo.initialize();
-		RepositoryConnection queryConn = repo.getConnection();
+		RepositoryConnection queryConn = queryRepo.getConnection();
 		
 		for (Query q : queries) {
 			URI qURI = createQueryURI(q);

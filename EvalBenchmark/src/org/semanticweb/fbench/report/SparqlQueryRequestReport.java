@@ -80,6 +80,7 @@ public class SparqlQueryRequestReport {
 				log.debug("## " + r.id + " => " + requestCount + " requests");
 				bout.write(requestCount + ";");
 			} catch (Exception e) {
+				log.warn("Exception (" + e.getClass() + "):" + e.getMessage());
 				bout.write("-1;");
 			}
 		}
