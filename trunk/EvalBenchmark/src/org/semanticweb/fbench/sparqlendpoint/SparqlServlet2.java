@@ -154,14 +154,18 @@ public class SparqlServlet2 extends HttpServlet {
 			qr = new QueryRequest(currentRequest, query, req, resp, outputStream);
 			activeQueries.add(qr);
 			queryRequestQueue.addLast(qr);
-			// notify all
 			queryRequestQueue.notify();
 		}
 				
 		synchronized (resp) {
 			try {
-				if (!qr.isDone())
-					resp.wait();				
+				// XXX
+				// the while is just cheating to avoid deadlock
+				// there is still some deadlock cause hidden anywhere!!!
+				// somehow this response thread does not get notified
+				// the access to queryrequest should be synched through resp
+				while (!qr.isDone())
+					resp.wait(500);				
 			} catch (InterruptedException e) {
 				log.warn("Request " + currentRequest + " was interrupted.");
 				// TODO check if threads working on this are running, if yes, kill them
@@ -180,7 +184,7 @@ public class SparqlServlet2 extends HttpServlet {
 		int count;
 		synchronized (queryRequestQueue) {
 			count = nextRequestId-1;
-			nextRequestId = 0;
+			nextRequestId = 1;
 		}
 		
 		log.info("Reporting #requests= " + count + ", resetting counter to 0");
@@ -378,8 +382,8 @@ public class SparqlServlet2 extends HttpServlet {
     				else if (qr.requestID%10==1)
     					log.info("Status Information: Current request is " + qr.requestID);	// log every 10 statement
 	    			processQuery(qr.query, qr.requestID, qr.req, qr.resp, qr.outputStream);
-	    			qr.done();
 	    			synchronized (qr.resp) {
+	    				qr.done();
 	    				qr.resp.notify();
 	    			}
 	    			if (log.isTraceEnabled())
@@ -575,6 +579,10 @@ public class SparqlServlet2 extends HttpServlet {
     				sb.append(q.requestID).append(";");
     			
     			System.out.println("Worker Status: " + _idle + " idle, requests in queue: " + req + ", active requests: " + sb.toString());
+    			if (_idle==nWorkers) {
+    				for (QueryRequest q : activeQueries)
+    					System.out.println("Active: " + q.query);
+    			}
     			
     			try {
 					Thread.sleep(5000);

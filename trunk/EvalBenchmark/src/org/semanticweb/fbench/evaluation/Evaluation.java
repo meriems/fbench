@@ -123,6 +123,7 @@ public abstract class Evaluation {
 				earlyResults.queryDone();
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
 				queryRunEnd(q, false);
+				log.debug(q.getIdentifier() + " (#1, duration: " + duration + "ms, results " + numberOfResults + ")");
 			} catch (Exception e) {
 				report.endQueryEvaluation(q, 1, -2, -1);
 				log.error("Error executing query " + q.getIdentifier()+ " (" + e.getClass().getSimpleName() + "): " + e.getMessage());
