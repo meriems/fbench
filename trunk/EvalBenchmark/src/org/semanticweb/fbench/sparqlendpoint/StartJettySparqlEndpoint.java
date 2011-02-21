@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.mortbay.jetty.Connector;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.nio.SelectChannelConnector;
-import org.mortbay.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.semanticweb.fbench.misc.TimedInterrupt;
 import org.semanticweb.fbench.misc.Utils;
 
@@ -43,23 +43,29 @@ public class StartJettySparqlEndpoint {
 			System.setProperty("log4j.configuration", "file:config/log4j-sparql.properties");
 		log = Logger.getLogger(StartJettySparqlEndpoint.class);
 		
-		System.setProperty("org.mortbay.io.nio.MAX_SELECTS", "50000");	// XXX check if this fixes the busy bugs
 		
 		writePIDFile();	// write a file of %PID%.pid such that process can be killed if it does not terminate
 		
         new GracefullShutdownThread().start();
         
+        /*
+         * Hopefully these settings fix some rarely occurring bugs:
+         * http://wiki.eclipse.org/Jetty/Feature/JVM_NIO_Bug
+         */
+        System.setProperty("org.mortbay.io.nio.MAX_SELECTS", "50000");
+        System.setProperty("org.mortbay.io.nio.BUSY_KEY", "10");
+        System.setProperty("value)org.mortbay.io.nio.BUSY_PAUSE", "100");
+        
 		server = new Server();
         Connector connector = new SelectChannelConnector();
         connector.setPort(port);
         connector.setHost(host);
-        connector.setMaxIdleTime(30*60*1000);	// 30 min
         server.addConnector(connector);
 
+       
         WebAppContext wac = new WebAppContext();
         wac.setContextPath("/");
         wac.setWar("config/jetty/sparql/");
-        wac.getSessionHandler().getSessionManager().setMaxInactiveInterval(30*60); // sets to 30 min 
         server.setHandler(wac);
         server.setStopAtShutdown(true);
 

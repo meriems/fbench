@@ -18,6 +18,21 @@ import org.semanticweb.fbench.query.Query;
 public interface EarlyResultsMonitor {
 
 	/**
+	 * Perform any initialization here, e.g. open files
+	 * 
+	 * @throws Exception
+	 */
+	public void init() throws Exception;
+	
+	/**
+	 * Perform any clean up operations here, e.g. close files.
+	 * 
+	 * @throws Exception
+	 */
+	public void close() throws Exception;
+	
+	
+	/**
 	 * Callback which can be used to measure early results performance.
 	 * 
 	 * Use the maintained queryEvalStart argument from nextQuery() to 

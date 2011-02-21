@@ -1,9 +1,10 @@
 package org.semanticweb.fbench.proxy;
 
-import java.io.File;
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.webapp.WebAppContext;
 
-import org.mortbay.jetty.Server;
-import org.mortbay.xml.XmlConfiguration;
 
 /**
  * This executable starts a Jetty server that acts as proxy for our
@@ -26,15 +27,14 @@ import org.mortbay.xml.XmlConfiguration;
  * startProxy
  * startProxy <RequestHandler>
  * startProxy <RequestHandler> <RequestDelay>
- * startProxy <RequestHandler> <RequestDelay> <JettyConfig>
+ * startProxy <RequestHandler> <RequestDelay> <Port>
  * 
  * Params:
  * <RequestHandler> - the fully qualified class implementing a RequestHanlder
  * 						default: {@link DelayRequestHandler}
  * <RequestDelay> - the delay in ms (e.g. used in {@link DelayRequestHandler}
  * 						default: 100
- * <JettyConfig> - the jetty config file to be used
- * 						default: config/jetty/jetty.xml
+ * <Port> - the port of the jetty server, default is 2000
  * 
  * @author as
  *
@@ -55,7 +55,8 @@ public class StartJettyProxy {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		String jettyCfg = "config/jetty/jetty.xml";
+		int port = 2000;
+		String host = "localhost";
 		
 		if (args.length==0) {
 			requestHandler = DelayRequestHandler.class.getCanonicalName();
@@ -71,11 +72,6 @@ public class StartJettyProxy {
 			requestDelay = Long.parseLong(args[1]);
 		}
 		
-		else if (args.length==3) {
-			requestHandler = args[0];
-			requestDelay = Long.parseLong(args[1]);
-			jettyCfg = args[2];
-		}
 		
 		else {
 			printHelpAndExit();
@@ -83,10 +79,22 @@ public class StartJettyProxy {
 		
 		if (System.getProperty("log4j.configuration")==null)
 			System.setProperty("log4j.configuration", "file:config/log4j-proxy.properties");
+		
+			
 		Server server = new Server();
-		XmlConfiguration configuration = new XmlConfiguration(new File(jettyCfg).toURI().toURL());
-	    configuration.configure(server);
-	    server.start();
+        Connector connector = new SelectChannelConnector();
+        connector.setPort(port);
+        connector.setHost(host);
+        server.addConnector(connector);
+
+       
+        WebAppContext wac = new WebAppContext();
+        wac.setContextPath("/");
+        wac.setWar("config/jetty/proxy/");
+        server.setHandler(wac);
+        server.setStopAtShutdown(true);
+
+        server.start();	
 	}
 
 	
@@ -95,7 +103,7 @@ public class StartJettyProxy {
 				"\tstartProxy\n" +
 				"\tstartProxy <RequestHandler>\n" +
 				"\tstartProxy <RequestHandler> <RequestDelay>\n" +
-				"\tstartProxy <RequestHandler> <RequestDelay> <JettyConfig>");
+				"\tstartProxy <RequestHandler> <RequestDelay> <Port>\n");
 		System.exit(1);
 	}
 }

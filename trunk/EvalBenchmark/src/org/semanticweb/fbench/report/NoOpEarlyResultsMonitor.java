@@ -25,4 +25,14 @@ public class NoOpEarlyResultsMonitor implements EarlyResultsMonitor {
 		;	// no-op		
 	}
 
+	@Override
+	public void close() throws Exception {
+		;	// no-op			
+	}
+
+	@Override
+	public void init() throws Exception {
+		;	// no-op			
+	}
+
 }

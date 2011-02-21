@@ -11,8 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.apache.log4j.Logger;
-import org.mortbay.jetty.HttpURI;
-import org.mortbay.proxy.AsyncProxyServlet;
+import org.eclipse.jetty.http.HttpURI;
+import org.eclipse.jetty.servlets.ProxyServlet;
 
 
 /**
@@ -27,7 +27,7 @@ import org.mortbay.proxy.AsyncProxyServlet;
  * @author as
  *
  */
-public class MyAsyncProxyServlet extends AsyncProxyServlet {
+public class MyAsyncProxyServlet extends ProxyServlet {
 
 	public static Logger log = Logger.getLogger(MyAsyncProxyServlet.class);
 	
