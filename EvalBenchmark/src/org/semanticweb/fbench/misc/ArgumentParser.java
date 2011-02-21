@@ -20,6 +20,7 @@ public class ArgumentParser {
 	 * allowed arguments (in any order)
 	 *  "configFile" -> location of the config file
 	 *  "-fill" -> enable filling, i.e. do not execute queries
+	 *  "-setup" -> enable setup mode
 	 *  
 	 * @param args
 	 * @return

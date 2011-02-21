@@ -35,6 +35,7 @@ public abstract class Evaluation {
 		// initialize the early results monitor
 		try {
 			earlyResults = (EarlyResultsMonitor)Class.forName(Config.getConfig().getEarlyResultsMonitorClass()).newInstance();
+			earlyResults.init();
 		} catch (Exception e) {
 			log.error("Error while configuring early results monitor. Check your earlyResultsMonitorClass setting. [" + Config.getConfig().getReportStream() + "]: " + e.getMessage());
 			log.debug("Exception details:", e);
@@ -90,6 +91,7 @@ public abstract class Evaluation {
 			runMultiEval();
 		}
 		
+		earlyResults.close();
 		report.close();
 		
 		// perform any clean up, e.g. in Sesame close repositories

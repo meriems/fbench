@@ -48,6 +48,7 @@ import org.openrdf.sail.nativerdf.NativeStoreConnection;
 import org.semanticweb.fbench.misc.TimedInterrupt;
 
 
+@Deprecated 
 public class SparqlServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2627590629243739807L;

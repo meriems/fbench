@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.pattern.ClassNamePatternConverter;
 import org.openrdf.model.Graph;
 import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
@@ -22,7 +21,13 @@ import org.openrdf.rio.RDFParser;
 import org.openrdf.rio.Rio;
 import org.openrdf.sail.federation.Federation;
 import org.semanticweb.fbench.Config;
-import org.semanticweb.fbench.provider.*;
+import org.semanticweb.fbench.provider.MemoryStoreProvider;
+import org.semanticweb.fbench.provider.NativeStoreFiller;
+import org.semanticweb.fbench.provider.NativeStoreRepository;
+import org.semanticweb.fbench.provider.RepositoryProvider;
+import org.semanticweb.fbench.provider.SPARQLProvider;
+import org.semanticweb.fbench.provider.SingleNativeRepository;
+import org.semanticweb.fbench.provider.SwiftOwlimProvider;
 import org.semanticweb.fbench.report.ReportStream;
 
 

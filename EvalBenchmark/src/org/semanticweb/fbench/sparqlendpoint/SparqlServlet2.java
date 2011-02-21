@@ -68,7 +68,7 @@ public class SparqlServlet2 extends HttpServlet {
 	protected List<WorkerThread> workers = new ArrayList<WorkerThread>();
 	protected int nWorkers;
 	protected int idleWorkers;
-		
+	
 	public SparqlServlet2() {
 		initializeRepository();
 		initializeWorkerThreads();
@@ -79,7 +79,7 @@ public class SparqlServlet2 extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp){
-
+		
 		try {
 			ServletInputStream input = req.getInputStream();
 			InputStreamReader in = new InputStreamReader(input);
@@ -97,8 +97,9 @@ public class SparqlServlet2 extends HttpServlet {
             handleQuery(query, req, resp, outputStream);
 			reader.close();
 		} 
-		catch (IOException e) {
+		catch (Exception e) {
 			log.error("Error: ", e);
+			error(resp, 500, "Unexpected error: " + e.getMessage());
 		}
 	}
 	
@@ -117,10 +118,7 @@ public class SparqlServlet2 extends HttpServlet {
 				handleQuery(query, req, resp, outputStream);
 			}
 			else {
-				resp.setStatus(501);
-				outputStream.println("You provided no query");
-				outputStream.flush();
-				outputStream.close();
+				error(resp, 400, "You provided no query.");
 			}
 		} 
 		catch (IOException e) {
@@ -147,35 +145,60 @@ public class SparqlServlet2 extends HttpServlet {
 	
 	private void handleQuery(String query, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
 		
-		int currentRequest;
-		QueryRequest qr;
-		synchronized (queryRequestQueue) {
-			currentRequest = nextRequestId++;
-			qr = new QueryRequest(currentRequest, query, req, resp, outputStream);
-			activeQueries.add(qr);
-			queryRequestQueue.addLast(qr);
-			queryRequestQueue.notify();
-		}
-				
-		synchronized (resp) {
-			try {
-				// XXX
-				// the while is just cheating to avoid deadlock
-				// there is still some deadlock cause hidden anywhere!!!
-				// somehow this response thread does not get notified
-				// the access to queryrequest should be synched through resp
-				while (!qr.isDone())
-					resp.wait(500);				
-			} catch (InterruptedException e) {
-				log.warn("Request " + currentRequest + " was interrupted.");
-				// TODO check if threads working on this are running, if yes, kill them
-				// XXX are parallel child threads killed as well?
-			} finally {
+		QueryRequest qr = null;
+		
+		try {
+			int currentRequest;
+			
+			synchronized (queryRequestQueue) {
+				currentRequest = nextRequestId++;
+				qr = new QueryRequest(currentRequest, query, req, resp, outputStream);
+				queryRequestQueue.addLast(qr);
+				queryRequestQueue.notify();
+			}
+					
+			synchronized( activeQueries) {
+				activeQueries.add(qr);
+			}
+			
+			synchronized (resp) {
+				try {
+					// XXX
+					// the while is just cheating to avoid deadlock
+					// there is still some deadlock cause hidden anywhere!!!
+					// somehow this response thread does not get notified
+					// the access to queryrequest should be synched through resp
+					while (!qr.isDone())
+						resp.wait(500);				
+				} catch (InterruptedException e) {
+					log.warn("Request " + currentRequest + " was interrupted.");
+					error(resp, 500, "Request was interrupted.");
+					// TODO check if threads working on this are running, if yes, kill them
+					// XXX are parallel child threads killed as well?
+				} 
+			}
+			
+		} catch (Exception e) {
+			log.error("Unexpected exception occured.", e);
+			error(resp, 500, "Unexpected error: " + e.getMessage());
+		} finally {
+			
+			synchronized( activeQueries) {
 				activeQueries.remove(qr);
 			}
-		}		
+		}
 	}
 	
+	protected void error(HttpServletResponse resp, int errorCode, String message) {
+		
+		try {
+			resp.sendError(errorCode, message);
+		} catch (IllegalStateException e) {
+			log.warn("Error message could not be send. Stream is committed: " + message);
+		} catch (IOException e) {
+			log.error("Error message could not be sent", e);
+		}
+	}
 	
 	private void handleCountRequest(HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
 		
@@ -194,8 +217,8 @@ public class SparqlServlet2 extends HttpServlet {
 			outputStream.flush();
 			outputStream.close();
 		} catch (Exception e) {
-			resp.setStatus(400);
-			log.error("Error while sending count report", e);
+			log.error("Error while sending count report.", e);
+			error(resp, 500, "Error while sending count report: " + e.getMessage() );
 		}
 		
 		
@@ -333,11 +356,15 @@ public class SparqlServlet2 extends HttpServlet {
 		}
     	
     	public boolean isDone() {
-    		return done;
+    		synchronized (this) {
+    			return done;
+    		}
     	}
     	
     	public void done() {
-    		done = true;
+    		synchronized (this) {
+    			done = true;
+    		}
     	}
     }
     
@@ -372,39 +399,58 @@ public class SparqlServlet2 extends HttpServlet {
 				throw new RuntimeException(e);
 			}
 			
-    		while (!this.isInterrupted()) {
+    		while (true) {
     			
     			QueryRequest qr = getNextQueryRequestSynch();
-    			
-    			if (qr!=null) {
-    				if (log.isTraceEnabled())
-    					log.trace("Processing request " + qr.requestID);
-    				else if (qr.requestID%10==1)
-    					log.info("Status Information: Current request is " + qr.requestID);	// log every 10 statement
-	    			processQuery(qr.query, qr.requestID, qr.req, qr.resp, qr.outputStream);
-	    			synchronized (qr.resp) {
-	    				qr.done();
-	    				qr.resp.notify();
-	    			}
-	    			if (log.isTraceEnabled())
-	    				log.trace("Processing request " + qr.requestID + " done.");
-	    			continue;	// check if there are more requests before wait()
-	    		}
-    			   			
-    			// wait on signal on the queue => push
-    			synchronized (queryRequestQueue) {
-    				try {
-    					if (!queryRequestQueue.isEmpty())
-    						continue;	// check too guarantee correctness
-    					log.trace("Waiting on notify call on queryRequestQueue. Falling asleep ...");
-    					idleWorkers++;
-						queryRequestQueue.wait();
-						idleWorkers--;
-					} catch (InterruptedException e) {
-						// ignore
+				
+    			try {
+					if (qr!=null) {
+						if (log.isTraceEnabled())
+							log.trace("Processing request " + qr.requestID);
+						else if (qr.requestID%10==1)
+							log.info("Status Information: Current request is " + qr.requestID);	// log every 10 statement
+						
+						try {
+							processQuery(qr.query, qr.requestID, qr.req, qr.resp, qr.outputStream);
+						} catch (Exception e) {
+							log.error("Error handling query " + qr.requestID , e);
+							
+							error(qr.resp, 500, "Error handling query " + qr.requestID + ": " + e.getMessage());
+							
+						} finally {
+							qr.done();
+			    			synchronized (qr.resp) {
+			    				qr.resp.notify();
+			    			}
+						}
+						
+		    			if (log.isTraceEnabled())
+		    				log.trace("Processing request " + qr.requestID + " done.");
+		    			continue;	// check if there are more requests before wait()
+		    		}
+					   			
+					// wait on signal on the queue => push
+					synchronized (queryRequestQueue) {
+						try {
+							if (!queryRequestQueue.isEmpty())
+								continue;	// check too guarantee correctness
+							log.trace("Waiting on notify call on queryRequestQueue. Falling asleep ...");
+							idleWorkers++;
+							queryRequestQueue.wait();
+							idleWorkers--;
+						} catch (InterruptedException e) {
+							// ignore
+						}
 					}
+    			} catch (Exception e) {
+    				if (qr!=null) {
+    					log.error("Unexpected exception occured. Rescheduling query task.", e);
+    				
+    					synchronized (queryRequestQueue) {
+    						queryRequestQueue.addLast(qr);
+    					}
+    				}
     			}
-
     			log.trace("Awake again, will check if new requests are available.");
     		}
     		
@@ -488,16 +534,8 @@ public class SparqlServlet2 extends HttpServlet {
     	    catch (Exception e) {
 
     			log.error("Error occured while processing the query. \nQuery:" + query, e);
-    			
-    	    	try {
-    	    		traceTo.flush();
-    	    		resp.setStatus(400);
-    				outputStream.write( ("Error occured while processing the query. <p>" + query + "<p>" + e.getClass().getSimpleName() + ": " + e.getMessage()).getBytes("UTF-8"));
-    				outputStream.flush();
-    				outputStream.close();
-    			} catch (Exception e1) {
-    				// ignore
-    			}
+    			error(resp, 500, "Error occured while processing the query. <p>" + query + "<p>" + e.getClass().getSimpleName() + ": " + e.getMessage());
+    	    	
     	    } 
     	}
     }
@@ -570,19 +608,15 @@ public class SparqlServlet2 extends HttpServlet {
     			
     			int _idle;
     			int req;
+    			StringBuilder sb = new StringBuilder();
     			synchronized (queryRequestQueue) {
     				_idle = idleWorkers;
     				req = queryRequestQueue.size();
-    			}
-    			StringBuilder sb = new StringBuilder();
-    			for (QueryRequest q : activeQueries)
-    				sb.append(q.requestID).append(";");
-    			
-    			System.out.println("Worker Status: " + _idle + " idle, requests in queue: " + req + ", active requests: " + sb.toString());
-    			if (_idle==nWorkers) {
     				for (QueryRequest q : activeQueries)
-    					System.out.println("Active: " + q.query);
+        				sb.append(q.requestID).append(";");
     			}
+    			    			
+    			System.out.println("Worker Status: " + _idle + " idle, requests in queue: " + req + ", active requests: " + sb.toString());
     			
     			try {
 					Thread.sleep(5000);
