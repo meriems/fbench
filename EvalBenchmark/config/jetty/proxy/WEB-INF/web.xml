@@ -3,7 +3,7 @@
 
 <web-app>
 	
-  <servlet>
+   <servlet>
     <servlet-name>Proxy</servlet-name>
     <servlet-class>org.semanticweb.fbench.proxy.MyAsyncProxyServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
