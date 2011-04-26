@@ -155,7 +155,7 @@ public class SesameRepositoryLoader {
 				throw new RuntimeException("ClassNotFoundException 'org.semanticweb.fbench.provider.BigOwlimRepository': probably fbench-bigowlim-ext.jar is missing on the classpath. See documentation for further information." );
 			}
 		}
-		else if (repType.equals(new LiteralImpl("NativeRepo"))){
+		else if (repType.equals(new LiteralImpl("NativeStore"))){
 			repProvider = new NativeStoreRepository();
 		}
 		else if (repType.equals(new LiteralImpl("SPARQLEndpoint"))){

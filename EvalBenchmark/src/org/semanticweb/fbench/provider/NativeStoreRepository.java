@@ -23,12 +23,12 @@ import org.semanticweb.fbench.misc.FileUtil;
  * 
  * relative Path for repo location (relative to baseDir)
  * 
- * <http://DBpedia> fluid:store "NativeRepo";
+ * <http://DBpedia> fluid:store "NativeStore";
  * fluid:RepositoryLocation "data\\repositories\\native-storage.dbpedia".
  * 
  * 
  * absolute Path
- * <http://DBpedia> fluid:store "NativeRepo";
+ * <http://DBpedia> fluid:store "NativeStore";
  * fluid:RepositoryLocation "D:\\data\\repositories\\native-storage.dbpedia".
  * </code>
  * 
