@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.semanticweb.fbench.Config;
-
 
 
 /**
@@ -21,13 +19,13 @@ public class QueryUtil {
 
 	
 	/**
-	 * queries are expected to be located in a file at %baseDir%\config\queries\%queryType%
+	 * queries are expected to be located in a file at config\queries\%queryType%
 	 * @param queryType
 	 * @return
 	 * 		the location of the query configuration for the specified type
 	 */
 	public static String getQueryLocation(QueryType queryType) {
-		return Config.getConfig().getBaseDir() + "config/queries/" + queryType.getFileName();
+		return "config/queries/" + queryType.getFileName();
 	}
 	
 	
