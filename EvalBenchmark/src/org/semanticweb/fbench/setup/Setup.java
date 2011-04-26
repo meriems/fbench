@@ -121,7 +121,7 @@ public class Setup {
 		
 		// check if the file exists at the local source
 		// if so, copy it to destPath
-		File local = new File(localSource);
+		File local = FileUtil.getFileLocation(localSource);
 		if (local.exists()) {
 			log.info("Using local source for " + id + ". Copy task starting...");
 			log.debug("Using local source for " + id + ": source=" + local.getAbsolutePath() + ", dest=" + dest.getAbsolutePath() + ", mediator=" + mediator.getClass().getCanonicalName());
