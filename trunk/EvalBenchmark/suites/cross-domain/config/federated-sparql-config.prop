@@ -14,3 +14,4 @@ envConfig = suites\\cross-domain\\env.prop
 
 evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
 
+sparqlRequestReport = true

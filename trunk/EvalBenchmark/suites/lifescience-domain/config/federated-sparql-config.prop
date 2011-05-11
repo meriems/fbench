@@ -13,3 +13,5 @@ fill = false
 envConfig = suites\\lifescience-domain\\env.prop
 
 evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
+
+sparqlRequestReport = true
