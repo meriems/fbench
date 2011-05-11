@@ -173,3 +173,13 @@ description = Benchmark using Sesame Framework
 #
 #  	 default false
 #sparqlRequestReport = true
+
+
+###
+# sparqlRequestDelay
+#   the delay in ms, which is added to each sparql request. Note that this configuration (if enabled) 
+#   works only with local SPARQL server, since the property is added in SPARQLServlet2, i.e. it is 
+# 	given as argument to the automatically started servers. 
+# 	
+#	Default is -1 (disabled)
+#sparqlRequestDelay=-1

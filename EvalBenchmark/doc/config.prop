@@ -158,3 +158,10 @@ evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
 #  
 # 
 description = Benchmark using Sesame Framework
+
+###
+# sparqlRequestReport
+# 
+# for SPARQL benchmarks the number of requests to the endpoints can be collected.
+# This works for SPARQLServlet2 endpoints only
+#sparqlRequestReport = true
