@@ -8,6 +8,7 @@ import javax.xml.bind.DatatypeConverter;
 import org.apache.log4j.Logger;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
+import org.openrdf.repository.sail.SailRepository;
 
 public class Utils {
 
@@ -37,6 +38,22 @@ public class Utils {
 					
 				} catch (RepositoryException e) {
 					Logger.getLogger(this.getClass()).error("Error closing conenction: " + e.getMessage());
+				}						
+			}
+		}, timeout);
+	}
+	
+	public static boolean shutdownRepositoryTimeout(final SailRepository repo, long timeout) {
+		TimedInterrupt t = new TimedInterrupt();
+		
+		return t.run( new Runnable() {
+			@Override
+			public void run() {
+				try {
+					repo.shutDown();
+					
+				} catch (RepositoryException e) {
+					Logger.getLogger(this.getClass()).error("Error shutting down repository: " + e.getMessage());
 				}						
 			}
 		}, timeout);

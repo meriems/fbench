@@ -11,6 +11,7 @@ import org.openrdf.repository.sail.SailRepository;
 import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.misc.TimedInterrupt;
+import org.semanticweb.fbench.misc.Utils;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.report.VoidReportStream;
 
@@ -106,28 +107,25 @@ public class SesameEvaluation extends Evaluation {
 	@Override
 	public void reInitialize() throws Exception {
 		log.info("Reinitializing repository and connection due to error in past results.");
-		if (sailRepo!=null) {
-			sailRepo.shutDown();
-			sailRepo = null;
-		}
-		log.debug("Repository shut down.");
+		
 		if (conn.isOpen())  {
 			try {
 				log.debug("Trying to close connection, interrupt time is 10000");
-				new TimedInterrupt().run( new Runnable() {
-					@Override
-					public void run() {
-						try {
-							conn.close();
-							log.info("Connection successfully closed.");
-						} catch (RepositoryException e) {
-							log.error("Error closing conenction: " + e.getMessage());
-						}						
-					}
-				}, 10000);
+				Utils.closeConnectionTimeout(conn, 10000);
 				
 			} catch (Exception e) { ; /*ignore*/ }
 		}
+		
+		if (sailRepo!=null) {
+			boolean shutDown = Utils.shutdownRepositoryTimeout(sailRepo, 20*60*1000);	// timeout of 20 min for shutdown
+			sailRepo = null;
+			if (shutDown)
+				log.debug("Repository shut down.");
+			else
+				log.debug("Failed to shut down repository within 20 minutes!");
+		}
+		
+		
 //		log.info("Waiting for 2 minutes to give server time for reinitialization");
 //		Thread.sleep(120000);
 		log.debug("loading repositories from scratch.");

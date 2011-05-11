@@ -145,7 +145,17 @@ public class SparqlServlet2 extends HttpServlet {
 	
 	private void handleQuery(String query, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
 		
+		log.trace("Server retrieved query: " + query);
 		QueryRequest qr = null;
+		
+		// additional delay to be configured via argument at startup
+		if (StartJettySparqlEndpoint.requestDelay>0) {
+    		try {
+				Thread.sleep(StartJettySparqlEndpoint.requestDelay);
+			} catch (InterruptedException e1) {
+				;
+			}
+		}
 		
 		try {
 			int currentRequest;
@@ -239,10 +249,10 @@ public class SparqlServlet2 extends HttpServlet {
 	
 	protected void initializeWorkerThreads() {
 		
-		log.info("Initializing worker threads .. ");
-		
 		int nWorkers = StartJettySparqlEndpoint.nWorkerThreads;
 		
+		log.info("Initializing " + nWorkers + " worker threads .. Delay is " + (StartJettySparqlEndpoint.requestDelay<=0?"disabled":StartJettySparqlEndpoint.requestDelay+"ms"));
+				
 		for (int i=0; i<nWorkers; i++) {
 			WorkerThread t = new WorkerThread();
 			try {
@@ -462,6 +472,7 @@ public class SparqlServlet2 extends HttpServlet {
     	
     	private void processQuery(String query, int reqId, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream out)	{
             
+    		 		
     		OutputStream outputStream = out;
             try {	
             	

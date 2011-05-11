@@ -280,6 +280,17 @@ public class Config {
 	/**
 	 * 
 	 * @return
+	 * 		the delay in ms, which is added to each sparql request. Note that this configuration (if enabled) 
+	 * 		works only with local SPARQL server, since the property is added in SPARQLServlet2, i.e. it is 
+	 * 		given as argument to the automatically started servers. Default is -1 (disabled)
+	 */
+	public int getSparqlRequestDelay() {
+		return Integer.parseInt(props.getProperty("sparqlRequestDelay", "-1"));
+	}
+	
+	/**
+	 * 
+	 * @return
 	 * 		the sparqlRequestReport setting, i.e. if the number of requests sent to the endpoint
 	 *  	shall be reported per query (see {@link SparqlQueryRequestReport}) 
 	 *  	
