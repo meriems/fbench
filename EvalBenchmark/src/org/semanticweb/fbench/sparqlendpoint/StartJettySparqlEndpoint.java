@@ -20,6 +20,7 @@ public class StartJettySparqlEndpoint {
 	public static String repositoryLocation = null;
 	public static int port = 0;
 	public static int nWorkerThreads = 8;
+	public static int requestDelay = -1;	// a request delay which is added to each request, -1=disabled
 	protected static Server server = null;
 	protected static File pidFile = null;
 	
@@ -28,16 +29,22 @@ public class StartJettySparqlEndpoint {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		if (args.length!=2 && args.length!=3)
+		if (args.length!=2 && args.length!=3 && args.length!=4)
 			printHelpAndExit();
 		
 		repositoryType = "native";
 		repositoryLocation = args[0];
 			
 		port = Integer.parseInt(args[1]);
-		if (args.length==3)
-			nWorkerThreads = Integer.parseInt(args[2]);
+		if (args.length>2)
+			requestDelay = Integer.parseInt(args[2]);	// see SparqlServlet2.handleQuery	
+		
+		if (args.length==4)
+			nWorkerThreads = Integer.parseInt(args[3]);
 		String host = "localhost";
+		
+		// the id for the log4j log file => logs/sparql_%port%.log
+		System.setProperty("serverId", Integer.toString(port));
 		
 		if (System.getProperty("log4j.configuration")==null)
 			System.setProperty("log4j.configuration", "file:config/log4j-sparql.properties");
@@ -54,7 +61,7 @@ public class StartJettySparqlEndpoint {
          */
         System.setProperty("org.mortbay.io.nio.MAX_SELECTS", "50000");
         System.setProperty("org.mortbay.io.nio.BUSY_KEY", "10");
-        System.setProperty("value)org.mortbay.io.nio.BUSY_PAUSE", "100");
+        System.setProperty("org.mortbay.io.nio.BUSY_PAUSE", "100");
         
 		server = new Server();
         Connector connector = new SelectChannelConnector();
@@ -77,7 +84,8 @@ public class StartJettySparqlEndpoint {
 	protected static void printHelpAndExit() {
 		System.out.println("Usage: \n" +
 				"\tstartSparqlEndpoint <RepositoryLocation> <Port>\n" +
-				"\tstartSparqlEndpoint <RepositoryLocation> <Port> <WorkerThreads>\n");
+				"\tstartSparqlEndpoint <RepositoryLocation> <Port> <Delay>\n" +
+				"\tstartSparqlEndpoint <RepositoryLocation> <Port> <Delay> <WorkerThreads>\n");
 		System.exit(1);
 	}
 	

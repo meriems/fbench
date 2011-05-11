@@ -40,7 +40,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	public static Logger log = Logger.getLogger(SesameSparqlEvaluation.class);
 
 	protected int runningServers = 0;
-	protected long extraWait = 20000;					// wait time for servers
+	protected long extraWait = 10000;					// wait time for servers
 	protected List<RepoInformation> repoInformation;	// repository information (id, location for local servers, url)
 	
 	protected SparqlQueryRequestReport sparqlReport = null;		// if not null, this report is used to collect request count stats
@@ -102,8 +102,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 			return;
 		
 		try {
-			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 5000ms.");
-			Thread.sleep(5000);
+			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 2500ms.");
+			Thread.sleep(2500);
 		} catch (InterruptedException e) {
 			// ignore
 		}
@@ -212,9 +212,11 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	
 	
 	protected Process startSparqlServer(File repoLoc, int port) throws Exception {
-		log.info("Starting endpoint for repository " + repoLoc.getAbsolutePath() + " on port " + port);
+		int delay = Config.getConfig().getSparqlRequestDelay();
+		log.info("Starting endpoint for repository " + repoLoc.getAbsolutePath() + " on port " + port + ". Delay for requests is " + (delay<=0?"disabled":delay+"ms") + ".");
 		String command = "cmd /c start startSparqlEndpoint.bat";
-		Process p = Runtime.getRuntime().exec(command + " \"" + repoLoc.getAbsolutePath() + "\" " + port);
+		String delayCmd = delay<=0 ? "" : " " + delay;
+		Process p = Runtime.getRuntime().exec(command + " \"" + repoLoc.getAbsolutePath() + "\" " + port + delayCmd);
 		return p;
 	}	
 	
@@ -225,6 +227,16 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	}
 	
 	
+	/**
+	 * Retrieve the information to start local SPARQL endpoints automatically.
+	 * 
+	 * lookup property is http://fluidops.org/config#localRepoLoc
+	 * 
+	 * @return
+	 * @throws RDFParseException
+	 * @throws RDFHandlerException
+	 * @throws IOException
+	 */
 	protected List<RepoInformation> getRepoInformation() throws RDFParseException, RDFHandlerException, IOException {
 		List<RepoInformation> res = new ArrayList<RepoInformation>();
 				
@@ -235,7 +247,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		parser.setRDFHandler(handler);
 		
 		parser.parse(new FileReader(dataConfig), "http://fluidops.org/config#");
-		Iterator<Statement> iter = graph.match(null, new URIImpl("http://fluidops.org/config#store"), null);
+		Iterator<Statement> iter = graph.match(null, new URIImpl("http://fluidops.org/config#localRepoLoc"), null);
 		
 		while (iter.hasNext()){
 			String id = null;
@@ -244,17 +256,13 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 			Statement s = iter.next();
 			
 			// id is the subject:
-			id = s.getSubject().stringValue();
-						
-			Iterator<Statement> tmpIter;
+			id = s.getSubject().stringValue();									
 			
 			// repoLoc is http://fluidops.org/config#localRepoLoc
-			tmpIter = graph.match(s.getSubject(), new URIImpl("http://fluidops.org/config#localRepoLoc"), null);
-			if (tmpIter.hasNext()) {
-				repoLoc = new File(tmpIter.next().getObject().stringValue());
-				log.debug("Found local repoLoc " + repoLoc.getPath());
-			}
+			repoLoc = new File(s.getObject().stringValue());
+			log.debug("Found local repoLoc " + repoLoc.getPath());
 			
+			Iterator<Statement> tmpIter;
 			// url is http://fluidops.org/config#SPARQLEndpoint
 			tmpIter = graph.match(s.getSubject(), new URIImpl("http://fluidops.org/config#SPARQLEndpoint"), null);
 			if (tmpIter.hasNext()) {

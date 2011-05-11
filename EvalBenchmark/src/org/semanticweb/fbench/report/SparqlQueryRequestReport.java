@@ -21,7 +21,7 @@ import org.semanticweb.fbench.query.Query;
  * Results are printed to result\sparql_stats.csv
  * 
  * Format:
- * Query;endpointId1-requests;..;endpointIdN-requests;
+ * Query;endpointId1-requests;..;endpointIdN-requests;total;
  * 
  * Note: this report only works for local sparql servers, i.e. only SparqlServlet2 can handle
  * the requests.
@@ -49,6 +49,7 @@ public class SparqlQueryRequestReport {
 		bout.write("query;");
 		for (RepoInformation r : repoInformation)
 			bout.write(r.id + ";");
+		bout.write("total;");
 		bout.write("\r\n");
 		
 	}
@@ -64,6 +65,7 @@ public class SparqlQueryRequestReport {
 		log.info("Requesting request count statistics from endpoints");
 		bout.write(query.getIdentifier() + ";");
 		
+		int total = 0;
 		for (RepoInformation r : repoInformation) {
 			
 			try {
@@ -76,6 +78,7 @@ public class SparqlQueryRequestReport {
 				bin.close();
 				
 				int requestCount = Integer.parseInt(_counter);
+				total += requestCount;
 				
 				log.debug("## " + r.id + " => " + requestCount + " requests");
 				bout.write(requestCount + ";");
@@ -84,7 +87,7 @@ public class SparqlQueryRequestReport {
 				bout.write("-1;");
 			}
 		}
-		
+		bout.write(total + ";");
 		bout.write("\r\n");
 		bout.flush();
 	}

@@ -25,9 +25,9 @@ import org.eclipse.jetty.webapp.WebAppContext;
  * Usage:
  * 
  * startProxy
- * startProxy <RequestHandler>
- * startProxy <RequestHandler> <RequestDelay>
- * startProxy <RequestHandler> <RequestDelay> <Port>
+ * startProxy <Port>
+ * startProxy <Port> <RequestDelay>
+ * startProxy <Port> <RequestDelay> <RequestHandler> 
  * 
  * Params:
  * <RequestHandler> - the fully qualified class implementing a RequestHanlder
@@ -58,20 +58,23 @@ public class StartJettyProxy {
 		int port = 2000;
 		String host = "localhost";
 		
-		if (args.length==0) {
-			requestHandler = DelayRequestHandler.class.getCanonicalName();
-		}
+		requestHandler = DelayRequestHandler.class.getCanonicalName();
 		
 		// request handler is specified
-		else if (args.length==1) {
-			requestHandler = args[0];
+		if (args.length==1) {
+			port = Integer.parseInt(args[0]);
 		} 
 		
 		else if (args.length==2) {
-			requestHandler = args[0];
+			port = Integer.parseInt(args[0]);
 			requestDelay = Long.parseLong(args[1]);
 		}
 		
+		else if (args.length==3) {
+			port = Integer.parseInt(args[0]);
+			requestDelay = Long.parseLong(args[1]);
+			requestHandler = args[2];
+		}
 		
 		else {
 			printHelpAndExit();
@@ -80,11 +83,15 @@ public class StartJettyProxy {
 		if (System.getProperty("log4j.configuration")==null)
 			System.setProperty("log4j.configuration", "file:config/log4j-proxy.properties");
 		
+		System.setProperty("org.mortbay.io.nio.MAX_SELECTS", "50000");
+        System.setProperty("org.mortbay.io.nio.BUSY_KEY", "10");
+        System.setProperty("org.mortbay.io.nio.BUSY_PAUSE", "100");
 			
 		Server server = new Server();
         Connector connector = new SelectChannelConnector();
         connector.setPort(port);
         connector.setHost(host);
+        connector.setMaxIdleTime(1*60*60);		// 3600s=1h
         server.addConnector(connector);
 
        
@@ -101,9 +108,9 @@ public class StartJettyProxy {
 	protected static void printHelpAndExit() {
 		System.out.println("Usage: \n" +
 				"\tstartProxy\n" +
-				"\tstartProxy <RequestHandler>\n" +
-				"\tstartProxy <RequestHandler> <RequestDelay>\n" +
-				"\tstartProxy <RequestHandler> <RequestDelay> <Port>\n");
+				"\tstartProxy <Port>\n" +
+				"\tstartProxy <Port> <RequestDelay>\n" +
+				"\tstartProxy <Port> <RequestDelay> <RequestHandler>\n");
 		System.exit(1);
 	}
 }
