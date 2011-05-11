@@ -7,7 +7,7 @@
 	<property name="global.module" value="FedBench" />
 	<property name="global.version" value="1.2" />
 	<property name="global.jar-name" value="fedbench.jar" />
-	<property name="global.buildID" value="105" />	<!-- e.g. the svn revision used -->
+	<property name="global.buildID" value="106" />	<!-- e.g. the svn revision used -->
 	<property name="root" location=".." />
 
 	
@@ -82,8 +82,8 @@
 		<zip destfile="${root}/release/FedBench ${global.version}.zip">
 			<zipfileset dir="${root}/release" prefix="lib" includes="*.jar" />
 			<zipfileset dir="${root}/lib" prefix="lib" includes="**/*" excludes="**/.svn/*" />
-			<zipfileset dir="${root}/suites" prefix="suites" includes="**/*.*" excludes="**/.svn/*" />
-			<zipfileset dir="${root}/config" prefix="config" includes="**/*.*" excludes="**/.svn/*" />
+			<zipfileset dir="${root}/suites" prefix="suites" includes="**/*" excludes="**/.svn/*" />
+			<zipfileset dir="${root}/config" prefix="config" includes="**/*" excludes="**/.svn/*" />
 			<zipfileset dir="${root}/doc" prefix="doc" includes="**/*.*" excludes="**/.svn/*" />
 			<zipfileset dir="${root}/build" includes="license" />
 			<zipfileset dir="${root}/release/tmp" includes="**/*" />
