@@ -33,7 +33,8 @@ querySet = SIMPLE
 #   
 #   see doc/sampleConfig for some configuration possibilities
 #
-dataConfig = config\\demoFederatedSparql.ttl
+#dataConfig = config\\demoFederatedSparql.ttl
+dataConfig = config/demoFederatedSparql.ttl
 
 
 
@@ -105,7 +106,7 @@ reportStream = org.semanticweb.fbench.report.CsvRdfReportStream
 #	location of the environment properties used in RdfReportStream
 #
 #   default: config\\env.prop
-envConfig = config\\env.prop
+envConfig = config/env.prop
 
 
 ###

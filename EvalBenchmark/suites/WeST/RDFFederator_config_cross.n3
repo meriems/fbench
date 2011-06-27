@@ -18,12 +18,24 @@
       sr:sailImpl [
          sail:sailType "west:FederationSail" ;
 
-         # optimizer settings
-         fed:optimizer "DYNAMIC_PROGRAMMING" ;
-#         fed:optimizer "PATTERN_HEURISTIC" ;
+         # source selection settings; type={Ask, Stats}
+         fed:sourceSelection [
+            fed:selectorType "Ask";
+            fed:useTypeStats true ;  # deprecated
+            
+            # sub query grouping
+            fed:groupBySource true ;
+            fed:groupBySameAs true ;
+         ] ;
 
-         # cardinality estimator settings
-         fed:estimator "STATISTICS" ;
+         # optimizer settings; type={DYNAMIC_PROGRAMMING, PATTERN_HEURISTIC}
+         # cardinality estimation settings; type={STATISTICS, TRUE_CARD}
+         fed:queryOptimization [
+            fed:optimizerType "DYNAMIC_PROGRAMMING" ;
+            fed:cardEstimator "STATISTICS" ;
+            fed:useBindJoin true ;
+            fed:useHashJoin true ;
+         ] ;
 
          # sparql endpoints
          # 1. dbpedia

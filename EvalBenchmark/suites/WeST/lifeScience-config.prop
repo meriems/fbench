@@ -1,6 +1,6 @@
 description = Endpoint Federation (WeST) - Life Science Queries
 
-dataConfig = suites\\WeST\\lifescience.ttl
+dataConfig = suites/WeST/lifeScience.ttl
 
 querySet = LIFESCIENCEDOMAIN
 
@@ -10,6 +10,6 @@ timeout = 600000
 
 fill = false
 
-envConfig = suites\\WeST\\env.prop
+envConfig = suites/WeST/env.prop
 
 evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
