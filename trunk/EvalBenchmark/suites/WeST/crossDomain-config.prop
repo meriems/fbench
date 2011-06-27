@@ -1,6 +1,6 @@
 description = Endpoint Federation (WeST) - Cross Domain Queries
 
-dataConfig = suites\\WeST\\crossDomain.ttl
+dataConfig = suites/WeST/crossDomain.ttl
 
 querySet = CROSSDOMAIN
 
@@ -10,6 +10,6 @@ timeout = 600000
 
 fill = false
 
-envConfig = suites\\WeST\\env.prop
+envConfig = suites/WeST/env.prop
 
 evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
