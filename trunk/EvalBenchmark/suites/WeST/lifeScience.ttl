@@ -1,7 +1,7 @@
 @prefix fluid: <http://fluidops.org/config#>.
 
 <http://RDFFederator> fluid:store "RDFFederator";
-                      fluid:rdfFile "suites/WeST/RDFFederator_config_lifescience.n3".
+                      fluid:rdfFile "suites/SPLENDID/lifeScience-config_SPLENDID.n3".
 
 
 <http://DBpedia> fluid:localRepoLoc "data/repositories/native-storage.dbpedia351".

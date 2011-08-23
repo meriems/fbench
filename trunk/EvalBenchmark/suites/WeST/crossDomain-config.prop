@@ -1,15 +1,15 @@
-description = Endpoint Federation (WeST) - Cross Domain Queries
+description = SPLENDID - Cross Domain Queries
 
-dataConfig = suites/WeST/crossDomain.ttl
+dataConfig = suites/SPLENDID/crossDomain.ttl
 
 querySet = CROSSDOMAIN
 
 evalRuns = 3
 
-timeout = 600000
+timeout = 120000
 
 fill = false
 
-envConfig = suites/WeST/env.prop
+envConfig = suites/SPLENDID/env.prop
 
 evaluationClass = org.semanticweb.fbench.evaluation.SesameSparqlEvaluation
