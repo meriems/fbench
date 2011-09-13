@@ -51,7 +51,7 @@ public class EvaluationThread extends Thread {
 			report.beginQueryEvaluation(query, run);
 			long start = System.currentTimeMillis();
 			earlyResults.nextQuery(query, start);
-			int numberOfResults = evaluator.runQuery(query);
+			int numberOfResults = evaluator.runQuery(query, run);
 			long duration = System.currentTimeMillis() - start;
 			report.endQueryEvaluation(query, run, duration, numberOfResults);
 			log.info(query.getIdentifier() + " (#" + run + ", duration: " + duration + "ms, results " + numberOfResults + ")");

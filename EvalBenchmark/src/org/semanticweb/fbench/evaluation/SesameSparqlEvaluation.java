@@ -77,8 +77,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	}
 
 	@Override
-	public int runQuery(Query q) throws Exception {
-		return super.runQuery(q);
+	public int runQuery(Query q, int run) throws Exception {
+		return super.runQuery(q, run);
 	}
 	
 	@Override
@@ -102,8 +102,8 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 			return;
 		
 		try {
-			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 2500ms.");
-			Thread.sleep(2500);
+			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 1000ms.");
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			// ignore
 		}
@@ -237,7 +237,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	 * @throws RDFHandlerException
 	 * @throws IOException
 	 */
-	protected List<RepoInformation> getRepoInformation() throws RDFParseException, RDFHandlerException, IOException {
+	protected List<RepoInformation> getRepoInformation() throws IOException {
 		List<RepoInformation> res = new ArrayList<RepoInformation>();
 				
 		final Graph graph = new GraphImpl();
@@ -246,7 +246,12 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		RDFHandler handler = new SimpleRDFHandler(graph);		
 		parser.setRDFHandler(handler);
 		
-		parser.parse(new FileReader(dataConfig), "http://fluidops.org/config#");
+		try {
+			parser.parse(new FileReader(dataConfig), "http://fluidops.org/config#");
+		} catch (Exception e) {
+			throw new IOException("Error while parsing file: " + e.getMessage(), e);
+		} 
+		
 		Iterator<Statement> iter = graph.match(null, new URIImpl("http://fluidops.org/config#localRepoLoc"), null);
 		
 		while (iter.hasNext()){

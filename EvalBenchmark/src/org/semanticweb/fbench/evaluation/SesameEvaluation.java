@@ -62,7 +62,7 @@ public class SesameEvaluation extends Evaluation {
 	}
 
 	@Override
-	public int runQuery(Query q) throws Exception {
+	public int runQuery(Query q, int run) throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, q.getQuery());
 		TupleQueryResult res = (TupleQueryResult) query.evaluate();
 		int resCounter = 0;
@@ -78,7 +78,7 @@ public class SesameEvaluation extends Evaluation {
 	}
 
 	@Override
-	public int runQueryDebug(Query q, boolean showResult) throws Exception {
+	public int runQueryDebug(Query q, int run, boolean showResult) throws Exception {
 		TupleQuery query = conn.prepareTupleQuery(QueryLanguage.SPARQL, q.getQuery());
 		TupleQueryResult res = (TupleQueryResult) query.evaluate();
 		int resCounter = 0;
