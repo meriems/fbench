@@ -81,21 +81,30 @@ public class SparqlServlet2 extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp){
 		
 		try {
-			ServletInputStream input = req.getInputStream();
-			InputStreamReader in = new InputStreamReader(input);
-			BufferedReader reader = new BufferedReader(in);
-			String query = "";
-			String tmp;
-			while ((tmp = reader.readLine()) != null){
-				query = query + tmp;
+//			ServletInputStream input = req.getInputStream();
+//			InputStreamReader in = new InputStreamReader(input);
+//			BufferedReader reader = new BufferedReader(in);
+//			String tmp;
+//			while ((tmp = reader.readLine()) != null){
+//				query = query + tmp;
+//			}
+			
+			String query;
+			if (req.getParameter("q") != null){
+				query = req.getParameter("q");
+			}
+			else if (req.getParameter("query") != null){
+				query = req.getParameter("query");				
+			}
+			else {
+				error(resp, 400, "You provided no query.");
+				return;
 			}
 			
-			query = query.substring(6);
+//			query = query.substring(6);
 			query = URLDecoder.decode(query, "ISO-8859-1");
-			
-			ServletOutputStream outputStream = resp.getOutputStream();
-            handleQuery(query, req, resp, outputStream);
-			reader.close();
+
+            handleQuery(query, req, resp, resp.getOutputStream());
 		} 
 		catch (Exception e) {
 			log.error("Error: ", e);
@@ -113,8 +122,12 @@ public class SparqlServlet2 extends HttpServlet {
 			if (req.getParameter("requestCount") != null) {
 				handleCountRequest(req, resp, outputStream);
 			}
+			else if (req.getParameter("q") != null){
+				String query = URLDecoder.decode(req.getParameter("q"), "ISO-8859-1");
+				handleQuery(query, req, resp, outputStream);
+			}
 			else if (req.getParameter("query") != null){
-				String query = req.getParameter("query");
+				String query = URLDecoder.decode(req.getParameter("query"), "ISO-8859-1");
 				handleQuery(query, req, resp, outputStream);
 			}
 			else {
@@ -144,6 +157,13 @@ public class SparqlServlet2 extends HttpServlet {
 	}
 	
 	private void handleQuery(String query, HttpServletRequest req, HttpServletResponse resp, ServletOutputStream outputStream) {
+		
+		// stupid hook for DARQ (TODO remove)
+		if (query.startsWith("BASE")) {
+			log.debug("BASE mentioned in query, use HOOK:");
+			if (query.contains("<>"))
+				query = query.replace("<>", "<http://example.org>");
+		}
 		
 		log.trace("Server retrieved query: " + query);
 		QueryRequest qr = null;
@@ -202,6 +222,7 @@ public class SparqlServlet2 extends HttpServlet {
 	protected void error(HttpServletResponse resp, int errorCode, String message) {
 		
 		try {
+			log.error("Error (" + errorCode + "): " + message);
 			resp.sendError(errorCode, message);
 		} catch (IllegalStateException e) {
 			log.warn("Error message could not be send. Stream is committed: " + message);
@@ -518,7 +539,8 @@ public class SparqlServlet2 extends HttpServlet {
                        
                     FileFormatServiceRegistry<? extends FileFormat, ?> registry = TupleQueryResultWriterRegistry.getInstance();
                     TupleQueryResultWriterFactory qrWriterFactory = (TupleQueryResultWriterFactory)ProtocolUtil.getAcceptableService(req, resp, registry);
-
+                    
+                    resp.setContentType("application/sparql-results+xml");
                     resp.setStatus(HttpServletResponse.SC_OK);
                     TupleQueryResultWriter qrWriter = qrWriterFactory.getWriter(outputStream);
                     QueryResultUtil.report(res, qrWriter);

@@ -120,7 +120,7 @@ public abstract class Evaluation {
 				report.beginQueryEvaluation(q, 1);
 				long start = System.currentTimeMillis();
 				earlyResults.nextQuery(q, start);
-				int numberOfResults = runQueryDebug(q, showResult);
+				int numberOfResults = runQueryDebug(q, 1, showResult);
 				long duration = System.currentTimeMillis() - start;
 				earlyResults.queryDone();
 				report.endQueryEvaluation(q, 1, duration, numberOfResults);
@@ -157,7 +157,7 @@ public abstract class Evaluation {
 					report.beginQueryEvaluation(q, run);
 					long start = System.currentTimeMillis();
 					earlyResults.nextQuery(q, start);
-					int numberOfResults = runQuery(q);
+					int numberOfResults = runQuery(q, run);
 					long duration = System.currentTimeMillis() - start;
 					earlyResults.queryDone();
 					report.endQueryEvaluation(q, run, duration, numberOfResults);
@@ -278,7 +278,7 @@ public abstract class Evaluation {
 	 * 		the number of results
 	 * @throws Exception
 	 */
-	public abstract int runQuery(Query query) throws Exception;
+	public abstract int runQuery(Query query, int run) throws Exception;
 	
 	/**
 	 * run the query in debug mode, i.e. printing debug information is ok and not
@@ -289,7 +289,7 @@ public abstract class Evaluation {
 	 * @return
 	 * @throws Exception
 	 */
-	public abstract int runQueryDebug(Query query, boolean showResult) throws Exception;
+	public abstract int runQueryDebug(Query query, int run, boolean showResult) throws Exception;
 	
 	
 	/**
