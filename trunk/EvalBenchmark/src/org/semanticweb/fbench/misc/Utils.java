@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 import javax.xml.bind.DatatypeConverter;
 
 import org.apache.log4j.Logger;
+import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.sail.SailRepository;
@@ -43,7 +44,8 @@ public class Utils {
 		}, timeout);
 	}
 	
-	public static boolean shutdownRepositoryTimeout(final SailRepository repo, long timeout) {
+//	public static boolean shutdownRepositoryTimeout(final SailRepository repo, long timeout) {
+	public static boolean shutdownRepositoryTimeout(final Repository repo, long timeout) {
 		TimedInterrupt t = new TimedInterrupt();
 		
 		return t.run( new Runnable() {

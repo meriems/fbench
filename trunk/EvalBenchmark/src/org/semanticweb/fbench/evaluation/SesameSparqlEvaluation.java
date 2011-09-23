@@ -12,7 +12,7 @@ import org.openrdf.model.Graph;
 import org.openrdf.model.Statement;
 import org.openrdf.model.impl.GraphImpl;
 import org.openrdf.model.impl.URIImpl;
-import org.openrdf.repository.sail.SailRepository;
+import org.openrdf.repository.Repository;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
@@ -128,7 +128,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 		}
 		
 		
-		log.info("Trying to close connection: " + conn.getClass().getCanonicalName() + " (" + conn.getSailConnection().getClass() + ")");
+		log.info("Trying to close connection: " + conn.getClass().getCanonicalName() + " (" + conn.getClass() + ")");
 		boolean _closed = Utils.closeConnectionTimeout(conn, 10000);
 		log.info( _closed ? "Connection closed successfully." : "Error closing connection, timeout occured.");
 				
@@ -172,7 +172,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	 * @return
 	 * @throws Exception
 	 */
-	protected SailRepository loadRepository() throws Exception {
+	protected Repository loadRepository() throws Exception {
 		return SesameRepositoryLoader.loadRepositories(new VoidReportStream());
 	}
 	

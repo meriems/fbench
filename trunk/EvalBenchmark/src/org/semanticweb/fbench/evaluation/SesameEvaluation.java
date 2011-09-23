@@ -6,9 +6,9 @@ import org.openrdf.query.QueryEvaluationException;
 import org.openrdf.query.QueryLanguage;
 import org.openrdf.query.TupleQuery;
 import org.openrdf.query.TupleQueryResult;
+import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
-import org.openrdf.repository.sail.SailRepository;
-import org.openrdf.repository.sail.SailRepositoryConnection;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.misc.TimedInterrupt;
 import org.semanticweb.fbench.misc.Utils;
@@ -26,8 +26,8 @@ public class SesameEvaluation extends Evaluation {
 
 	public static Logger log = Logger.getLogger(SesameEvaluation.class);
 	
-	protected SailRepository sailRepo;
-	protected SailRepositoryConnection conn;
+	protected Repository sailRepo;
+	protected RepositoryConnection conn;
 	
 	public SesameEvaluation() {
 		super();
