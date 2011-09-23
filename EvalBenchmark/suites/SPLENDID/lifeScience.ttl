@@ -1,6 +1,6 @@
 @prefix fluid: <http://fluidops.org/config#>.
 
-<http://RDFFederator> fluid:store "RDFFederator";
+<http://RDFFederator> fluid:store "org.semanticweb.fbench.provider.SPLENDIDProvider";
                       fluid:rdfFile "suites/SPLENDID/lifeScience-config_SPLENDID.n3".
 
 

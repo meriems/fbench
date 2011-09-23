@@ -42,7 +42,8 @@ public class SesameRepositoryLoader {
 
 	public static Logger log = Logger.getLogger(SesameRepositoryLoader.class);
 	
-	public static SailRepository loadRepositories(ReportStream report) throws Exception {
+//	public static SailRepository loadRepositories(ReportStream report) throws Exception {
+	public static Repository loadRepositories(ReportStream report) throws Exception {
 		Federation fed = new Federation();
 		final Graph graph = new GraphImpl();
 		final String dataConfig = Config.getConfig().getDataConfig();
@@ -85,24 +86,11 @@ public class SesameRepositoryLoader {
 			repNode = s.getSubject();
 			repType = s.getObject();
 			
-			// WeST RDF federator
-			if (repType.equals(new LiteralImpl("RDFFederator"))){
-				RepositoryProvider rep;
-				String className = "org.semanticweb.fbench.provider.RDFFederatorProvider";
-				try {
-					Class<?> federatorClass = Class.forName(className);
-					rep = (RepositoryProvider) federatorClass.newInstance();
-				} catch (ClassNotFoundException e) {
-					throw new RuntimeException("ClassNotFoundException '" + className + "': probably RDFFederator.jar is missing on the classpath." );
-				}
-				return (SailRepository)rep.load(graph, repNode);
-			}
-			
 			// special cases: no federation needed, just a single local store
 			if (repType.equals(new LiteralImpl("SingleNative"))){
 				long datasetLoadStart = System.currentTimeMillis();
 				SingleNativeRepository rep = new SingleNativeRepository();
-				SailRepository res = rep.load(graph, repNode);
+				Repository res = rep.load(graph, repNode);
 				long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
 				report.reportDatasetLoadTime(rep.getId(graph, repNode), repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
 				return res;
@@ -116,10 +104,21 @@ public class SesameRepositoryLoader {
 				} catch (ClassNotFoundException e) {
 					throw new RuntimeException("ClassNotFoundException 'org.semanticweb.fbench.provider.SingleBigOWLimRepository': probably fbench-bigowlim-ext.jar is missing on the classpath. See documentation for further information." );
 				}
-				SailRepository res = (SailRepository)rep.load(graph, repNode);
+				Repository res = rep.load(graph, repNode);
 				long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
 				report.reportDatasetLoadTime(rep.getId(graph, repNode), repNode.stringValue(), rep.getLocation(graph, repNode), repType.stringValue(), datasetLoadDuration);
 				return res;
+			}
+			
+			// try to instantiate provider implementation for specified class name
+			Class<?> unknownClass = null;
+			try {
+				unknownClass = Class.forName(repType.stringValue());
+				RepositoryProvider repProvider = (RepositoryProvider) unknownClass.newInstance();
+				return repProvider.load(graph, repNode);
+			} catch (ClassNotFoundException e) {
+				// not a supported provider class - maybe the provider jar file is missing 
+//				throw new RuntimeException("ClassNotFoundException '" + unknownClass + "': probably a provider jar is missing on the classpath. See documentation for further information." );
 			}
 			
 			// load the respective repository into the federation
