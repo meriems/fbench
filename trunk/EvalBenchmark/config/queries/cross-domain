@@ -34,7 +34,7 @@ SELECT ?film ?director ?genre WHERE {
    ?x <http://data.linkedmdb.org/resource/movie/genre> ?genre .
 }
 
-SELECT ?name ?location ?news WHERE {
+SELECT ?name ?location WHERE {
    ?artist <http://xmlns.com/foaf/0.1/name> ?name .
    ?artist <http://xmlns.com/foaf/0.1/based_near> ?location .
    ?location <http://www.geonames.org/ontology#parentFeature> ?germany . 
