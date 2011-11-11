@@ -6,7 +6,7 @@ mainclass=org.semanticweb.fbench.FederationEval
 classpath=.:bin/
 
 # add all jars to classpath
-for jar in `ls lib/federator.jar lib/*/*.jar`; do classpath=$classpath:$jar; done
+for jar in `ls lib/*.jar lib/*/*.jar`; do classpath=$classpath:$jar; done
 
 # set logging options
 logging="-Dlog4j.configuration=file:config/log4j.properties"
