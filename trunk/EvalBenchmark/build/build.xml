@@ -4,9 +4,9 @@
 	
 		<!-- build properties -->
 	<property name="global.module" value="FedBench" />
-	<property name="global.version" value="1.5" />
+	<property name="global.version" value="2.0" />
 	<property name="global.jar-name" value="fedbench.jar" />
-	<property name="global.buildID" value="121" />	<!-- e.g. the svn revision used -->
+	<property name="global.buildID" value="133" />	<!-- e.g. the svn revision used -->
 	<property name="root" location=".." />
 
 	
