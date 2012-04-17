@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="fedx-bridge"/>
+	<classpathentry kind="src" path="owlim-src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/sesame/trree-3.0.beta12.jar"/>
 	<classpathentry kind="lib" path="lib/sesame/owlim-3.0.beta12.jar"/>
@@ -12,7 +14,6 @@
 	<classpathentry kind="lib" path="lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/lucene/lucene-core-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/sesame/openrdf-sesame-2.3.2-onejar.jar" sourcepath="C:/Java/APIs/sesame-2.3.2/src"/>
 	<classpathentry kind="lib" path="lib/sesame/openrdf-alibaba-2.0-beta3.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-http-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-io-7.3.0.v20110203.jar"/>
@@ -27,10 +28,11 @@
 	<classpathentry kind="lib" path="lib/jetty7/jetty-client-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-servlets-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-deploy-7.3.0.v20110203.jar"/>
-	<classpathentry kind="lib" path="lib/fedx-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/splendid/SPLENDID.jar"/>
 	<classpathentry kind="lib" path="lib/bridge/FedBench-DARQ-bridge.jar"/>
-	<classpathentry kind="lib" path="lib/bridge/FedBench-FedX-bridge.jar"/>
 	<classpathentry kind="lib" path="lib/bridge/FedBench-SPLENDID-bridge.jar"/>
+	<classpathentry kind="lib" path="lib/sesame/openrdf-sesame-2.6.5-onejar.jar"/>
+	<classpathentry kind="lib" path="lib/fedx/fedx-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/bridge/FedBench-FedX-bridge.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
