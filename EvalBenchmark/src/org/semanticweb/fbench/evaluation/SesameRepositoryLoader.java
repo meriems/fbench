@@ -110,17 +110,6 @@ public class SesameRepositoryLoader {
 				return res;
 			}
 			
-			// try to instantiate provider implementation for specified class name
-			Class<?> unknownClass = null;
-			try {
-				unknownClass = Class.forName(repType.stringValue());
-				RepositoryProvider repProvider = (RepositoryProvider) unknownClass.newInstance();
-				return repProvider.load(graph, repNode);
-			} catch (ClassNotFoundException e) {
-				// not a supported provider class - maybe the provider jar file is missing 
-//				throw new RuntimeException("ClassNotFoundException '" + unknownClass + "': probably a provider jar is missing on the classpath. See documentation for further information." );
-			}
-			
 			// load the respective repository into the federation
 			Repository rep = loadRepository(graph, repNode, repType, report);
 			if (rep != null){
@@ -166,8 +155,16 @@ public class SesameRepositoryLoader {
 		else if (repType.equals(new LiteralImpl("Memory"))){
 			repProvider = new MemoryStoreProvider();
 		}
-		else
-			throw new RuntimeException("Repository type not supported: " + repType.stringValue());
+		else {
+			// try to load the provider class
+			try {
+				repProvider = (RepositoryProvider)Class.forName(repType.stringValue()).newInstance();				
+			} catch (Exception e) {
+				log.error("Error loading repository provider for " + repType.stringValue(), e);
+				throw new RuntimeException("Repository type not supported: " + repType.stringValue());
+			}
+		}
+			
 		
 		Repository rep = repProvider.load(graph, repNode);
 		long datasetLoadDuration = System.currentTimeMillis()-datasetLoadStart;
