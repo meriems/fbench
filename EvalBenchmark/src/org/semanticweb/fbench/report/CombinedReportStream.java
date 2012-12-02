@@ -3,7 +3,6 @@ package org.semanticweb.fbench.report;
 import java.util.List;
 
 import org.semanticweb.fbench.query.Query;
-import org.semanticweb.fbench.query.QueryType;
 
 
 
@@ -22,7 +21,7 @@ public class CombinedReportStream implements ReportStream {
 	protected SimpleReportStream simple = new SimpleReportStream();
 	protected CsvReportStream2 csv = new CsvReportStream2();
 	
-	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
+	public void beginEvaluation(String dataConfig, List<String> querySet,
 			int numberOfQueries, int numberOfRuns) {
 		csv.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
 		simple.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);

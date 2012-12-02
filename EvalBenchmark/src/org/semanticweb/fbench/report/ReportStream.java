@@ -3,7 +3,6 @@ package org.semanticweb.fbench.report;
 import java.util.List;
 
 import org.semanticweb.fbench.query.Query;
-import org.semanticweb.fbench.query.QueryType;
 
 
 
@@ -41,7 +40,7 @@ public interface ReportStream {
 	 * @param numberOfRuns
 	 * 			the number of evaluation runs
 	 */
-	public void beginEvaluation(String dataConfig, List<QueryType> querySet, int numberOfQueries, int numberOfRuns);
+	public void beginEvaluation(String dataConfig, List<String> querySet, int numberOfQueries, int numberOfRuns);
 
 	/**
 	 * called at the beginning of a new run.

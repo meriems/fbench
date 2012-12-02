@@ -3,12 +3,11 @@ package org.semanticweb.fbench.report;
 import java.util.List;
 
 import org.semanticweb.fbench.query.Query;
-import org.semanticweb.fbench.query.QueryType;
 
 public class VoidReportStream implements ReportStream {
 
 	@Override
-	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
+	public void beginEvaluation(String dataConfig, List<String> querySet,
 			int numberOfQueries, int numberOfRuns) {
 		
 	}

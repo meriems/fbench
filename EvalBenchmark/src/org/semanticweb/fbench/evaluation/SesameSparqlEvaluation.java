@@ -40,7 +40,7 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 	public static Logger log = Logger.getLogger(SesameSparqlEvaluation.class);
 
 	protected int runningServers = 0;
-	protected long extraWait = 10000;					// wait time for servers
+	protected long extraWait = 1000;					// wait time for servers
 	protected List<RepoInformation> repoInformation;	// repository information (id, location for local servers, url)
 	
 	protected SparqlQueryRequestReport sparqlReport = null;		// if not null, this report is used to collect request count stats
@@ -102,8 +102,9 @@ public class SesameSparqlEvaluation extends SesameEvaluation {
 			return;
 		
 		try {
-			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of 1000ms.");
-			Thread.sleep(1000);
+			long breakAfterQuery = Config.getConfig().getBreakAfterQuery();
+			log.debug("Query " + query.getIdentifier() + " done. Giving SPARQL endpoint a break of " + breakAfterQuery + "ms.");
+			Thread.sleep(breakAfterQuery);
 		} catch (InterruptedException e) {
 			// ignore
 		}

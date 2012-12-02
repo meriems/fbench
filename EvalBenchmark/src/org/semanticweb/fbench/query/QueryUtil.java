@@ -24,8 +24,8 @@ public class QueryUtil {
 	 * @return
 	 * 		the location of the query configuration for the specified type
 	 */
-	public static String getQueryLocation(QueryType queryType) {
-		return "config/queries/" + queryType.getFileName();
+	public static String getQueryLocation(String queryFile) {
+		return "config/queries/" + queryFile;
 	}
 	
 	
@@ -51,9 +51,9 @@ public class QueryUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static List<Query> loadQueries(QueryType queryType) throws FileNotFoundException, IOException {
+	public static List<Query> loadQueries(String queryFile) throws FileNotFoundException, IOException {
 		ArrayList<Query> res = new ArrayList<Query>();
-		FileReader fin = new FileReader(getQueryLocation(queryType));
+		FileReader fin = new FileReader(getQueryLocation(queryFile));
 		BufferedReader in = new BufferedReader(fin);
 		String tmp;
 		String tmpQuery = "";
@@ -61,15 +61,15 @@ public class QueryUtil {
 		while ((tmp = in.readLine()) != null){
 			if (tmp.equals("")){
 				if (!tmpQuery.equals(""))
-					res.add(new Query(tmpQuery, queryType, ++nQuery));
+					res.add(new Query(tmpQuery, queryFile, ++nQuery));
 				tmpQuery = "";
 			}
 			else {
-				tmpQuery = tmpQuery + tmp;
+				tmpQuery = tmpQuery + tmp + "\n";
 			}
 		}
 		if (!tmpQuery.equals(""))
-			res.add(new Query(tmpQuery, queryType, ++nQuery));
+			res.add(new Query(tmpQuery, queryFile, ++nQuery));
 		return res;
 	}
 }

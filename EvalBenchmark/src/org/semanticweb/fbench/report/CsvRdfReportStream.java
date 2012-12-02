@@ -22,7 +22,7 @@ public class CsvRdfReportStream implements ReportStream {
 	protected RdfReportStream rdf = new RdfReportStream();
 	protected CsvReportStream2 cvs = new CsvReportStream2();
 	
-	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
+	public void beginEvaluation(String dataConfig, List<String> querySet,
 			int numberOfQueries, int numberOfRuns) {
 		cvs.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);
 		rdf.beginEvaluation(dataConfig, querySet, numberOfQueries, numberOfRuns);

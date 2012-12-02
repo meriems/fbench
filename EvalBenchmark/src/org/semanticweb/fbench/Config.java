@@ -4,9 +4,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
 import org.semanticweb.fbench.evaluation.SesameEvaluation;
 import org.semanticweb.fbench.misc.ArgumentParser;
 import org.semanticweb.fbench.provider.SPARQLProvider;
@@ -115,16 +115,22 @@ public class Config {
 	 * @throws IllegalArgumentException
 	 * 			if any of the provided query types cannot be returned by QueryType.valueOf()
 	 */
-	public List<QueryType> getQuerySet() throws IllegalArgumentException {
+	public List<String> getQuerySet() throws IllegalArgumentException {
+		
+		List<String> res = new ArrayList<String>();
 		
 		if (completeQuerySet()) {
-			return Arrays.asList( QueryType.values() );
+			for (QueryType qt : QueryType.values())
+				res.add(qt.getFileName());
 		}
-		
-		ArrayList<QueryType> res = new ArrayList<QueryType>();
+
 		String q = props.getProperty("querySet");
-		for (String type : q.split(","))
-			res.add(QueryType.valueOf(type.toUpperCase()));
+		try {
+			QueryType qt = QueryType.valueOf(q.toUpperCase());
+			res.add(qt.getFileName());
+		} catch (Exception e) {
+			res.add(q);
+		}
 		
 		return res;
 	}
@@ -288,6 +294,9 @@ public class Config {
 		return Integer.parseInt(props.getProperty("sparqlRequestDelay", "-1"));
 	}
 	
+	public long getBreakAfterQuery() {
+		return Long.parseLong(props.getProperty("breakAfterQuery", "1000"));
+	}
 	/**
 	 * 
 	 * @return
