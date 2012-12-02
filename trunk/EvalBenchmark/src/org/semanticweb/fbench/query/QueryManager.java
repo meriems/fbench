@@ -43,8 +43,8 @@ public class QueryManager {
 	 * @throws IOException
 	 */
 	private void init() throws FileNotFoundException, IOException{
-		for (QueryType t : Config.getConfig().getQuerySet()) {
-			queries.addAll( QueryUtil.loadQueries(t) );
+		for (String queryFile : Config.getConfig().getQuerySet()) {
+			queries.addAll( QueryUtil.loadQueries(queryFile) );
 		}
 	}
 	
@@ -62,10 +62,10 @@ public class QueryManager {
 	 * @return
 	 * 		the initialized queries corresponding to queryType
 	 */
-	public List<Query> getQueries(QueryType queryType) {
+	public List<Query> getQueries(String queryFile) {
 		ArrayList<Query> res = new ArrayList<Query>();
 		for (Query q : queries)
-			if (q.getType().equals(queryType))
+			if (q.getType().equals(queryFile))
 				res.add(q);
 		return res;
 	}

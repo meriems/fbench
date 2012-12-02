@@ -23,11 +23,13 @@
 	
 	<!-- clean: delete bin folder -->
 	<target name="clean">
+
         <delete dir="${root}/bin" failonerror="true" />
 		<mkdir dir="${root}/bin" />
 		
 		<delete dir="${root}/release" failonerror="true" />
 		<mkdir dir="${root}/release" />
+		<mkdir dir="${root}/release/tmpbin" />
 		<mkdir dir="${root}/release/javadoc" />
 		
 	</target>
@@ -35,7 +37,7 @@
 		
 	<!-- compile the source code -->
 	<target name="compile" depends="clean">
-		<javac srcdir="${root}/src" destdir="${root}/bin" classpathref="base.classpath" debug="on" optimize="on" fork="false" verbose="false" listfiles="false" includes="**/*.java">
+		<javac srcdir="${root}/src" destdir="${root}/release/tmpbin" classpathref="base.classpath" debug="on" optimize="on" fork="false" verbose="false" listfiles="false" includes="**/*.java">
 			<compilerarg value="-Xlint" />
 		</javac>
 	</target>
@@ -45,7 +47,7 @@
 	<target name="jar" depends="compile">
 		<tstamp/>
 		<jar destfile="${root}/release/${global.jar-name}" duplicate="fail" compress="true">
-			<fileset dir="${root}/bin" includes="**/*.class" />
+			<fileset dir="${root}/release/tmpbin" includes="**/*.class" />
 			<manifest>
 				<attribute name="built-by" value="FedBench Project" />
 				<attribute name="project" value="FedBench" />

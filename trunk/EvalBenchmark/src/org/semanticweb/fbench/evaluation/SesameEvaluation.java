@@ -67,12 +67,16 @@ public class SesameEvaluation extends Evaluation {
 		TupleQueryResult res = (TupleQueryResult) query.evaluate();
 		int resCounter = 0;
 		
-		while(res.hasNext()){
-			if (isInterrupted())
-				throw new QueryEvaluationException("Thread has been interrupted.");
-			BindingSet bindings = res.next();
-			resCounter++;
-			earlyResults.handleResult(bindings, resCounter);			
+		try {
+			while(res.hasNext()){
+				if (isInterrupted())
+					throw new QueryEvaluationException("Thread has been interrupted.");
+				BindingSet bindings = res.next();
+				resCounter++;
+				earlyResults.handleResult(bindings, resCounter);			
+			}
+		} finally {
+			res.close();
 		}
 		return resCounter;
 	}

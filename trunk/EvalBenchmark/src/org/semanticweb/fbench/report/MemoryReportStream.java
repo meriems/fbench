@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.semanticweb.fbench.query.Query;
-import org.semanticweb.fbench.query.QueryType;
 
 public abstract class MemoryReportStream implements ReportStream {
 
@@ -49,7 +48,7 @@ public abstract class MemoryReportStream implements ReportStream {
 	protected String evaluationID;
 	protected GregorianCalendar evaluationDate;
 	protected String dataConfig;
-	protected List<QueryType> querySet;
+	protected List<String> querySet;
 	protected int numberOfQueries;
 	protected int numberOfRuns;
 	protected long initializationDuration;
@@ -67,7 +66,7 @@ public abstract class MemoryReportStream implements ReportStream {
 	}
 	
 	@Override
-	public void beginEvaluation(String dataConfig, List<QueryType> querySet,
+	public void beginEvaluation(String dataConfig, List<String> querySet,
 			int numberOfQueries, int numberOfRuns) {
 		this.dataConfig = dataConfig;
 		this.querySet = querySet;

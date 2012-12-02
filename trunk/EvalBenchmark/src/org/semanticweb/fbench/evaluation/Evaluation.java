@@ -198,6 +198,8 @@ public abstract class Evaluation {
 			for (Query q : QueryManager.getQueryManager().getQueries()) {
 				try {
 					log.info("Executing query " + q.getIdentifier() + ", run " + run );
+					if (log.isTraceEnabled())
+						log.trace("Query: " + q.getQuery());
 					EvaluationThread eval = new EvaluationThread(this, q, report, earlyResults, run);
 					
 					if (reInit) {

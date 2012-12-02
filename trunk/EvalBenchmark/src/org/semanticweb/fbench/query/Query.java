@@ -10,13 +10,13 @@ package org.semanticweb.fbench.query;
 public class Query {
 
 	protected String query;				// the query itself
-	protected QueryType type;			// the type of the query (defines the file)
+	protected String queryFile;			// the type of the query (defines the file)
 	protected int number;				// the number of this query in queries file
 	
-	public Query(String query, QueryType type, int number) {
+	public Query(String query, String queryFile, int number) {
 		super();
 		this.query = query;
-		this.type = type;
+		this.queryFile = queryFile;
 		this.number = number;
 	}
 
@@ -24,8 +24,8 @@ public class Query {
 		return query;
 	}
 
-	public QueryType getType() {
-		return type;
+	public String getType() {
+		return queryFile;
 	}
 
 	public int getNumber() {
@@ -33,7 +33,7 @@ public class Query {
 	}
 	
 	public String getIdentifier() {
-		return type.getFileName() + "_" + number;
+		return queryFile + "_" + number;
 	}
 	
 	@Override
@@ -47,7 +47,7 @@ public class Query {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + number;
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((queryFile == null) ? 0 : queryFile.hashCode());
 		return result;
 	}
 
@@ -62,10 +62,10 @@ public class Query {
 		Query other = (Query) obj;
 		if (number != other.number)
 			return false;
-		if (type == null) {
-			if (other.type != null)
+		if (queryFile == null) {
+			if (other.queryFile != null)
 				return false;
-		} else if (!type.equals(other.type))
+		} else if (!queryFile.equals(other.queryFile))
 			return false;
 		return true;
 	}
