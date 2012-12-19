@@ -78,11 +78,11 @@ public class CsvReportStream implements ReportStream {
 	public void open() throws Exception {
 		
 		// evaluation file
-		String file = Config.getConfig().getBaseDir() + "result\\result.csv"; 
+		String file = Config.getConfig().getBaseDir() + "result/result.csv"; 
 		evalOut = new BufferedWriter( new FileWriter(file));
 		evalOut.append("run;query-id;dataConfig;queryTime;results;\r\n");
 		
-		String file2 = Config.getConfig().getBaseDir() + "result\\loadTimes.csv"; 
+		String file2 = Config.getConfig().getBaseDir() + "result/loadTimes.csv"; 
 		loadOut = new BufferedWriter( new FileWriter(file2));
 		loadOut.append("id;name;location;type;duration;\r\n");
 	}
