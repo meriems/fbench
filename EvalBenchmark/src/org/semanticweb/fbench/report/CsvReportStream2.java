@@ -33,7 +33,7 @@ public class CsvReportStream2 extends MemoryReportStream {
 	
 	private void writeLoadTimes() throws Exception {
 		
-		String file2 = Config.getConfig().getBaseDir() + "result\\loadTimes.csv"; 
+		String file2 = Config.getConfig().getBaseDir() + "result/loadTimes.csv"; 
 		BufferedWriter loadOut = new BufferedWriter( new FileWriter(file2));
 		loadOut.append("id;name;location;type;duration;\r\n");
 		
@@ -48,7 +48,7 @@ public class CsvReportStream2 extends MemoryReportStream {
 	
 	private void writeResult() throws Exception {
 		
-		String file = Config.getConfig().getBaseDir() + "result\\result.csv"; 
+		String file = Config.getConfig().getBaseDir() + "result/result.csv"; 
 		File outFile = new File(file);
 		BufferedWriter bw = new BufferedWriter( new FileWriter( outFile ));
 		

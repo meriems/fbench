@@ -234,7 +234,7 @@ public class RdfReportStream extends MemoryReportStream {
 	
 	
 	protected void finish() throws Exception {
-		String file = Config.getConfig().getBaseDir() + "result\\result.nt"; 
+		String file = Config.getConfig().getBaseDir() + "result/result.nt"; 
 		File outFile = new File(file);
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(outFile));
 		RDFWriter wr = Rio.createWriter(RDFFormat.NTRIPLES, out);
