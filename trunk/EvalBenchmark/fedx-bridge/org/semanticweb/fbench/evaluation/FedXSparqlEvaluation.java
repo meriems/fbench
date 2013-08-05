@@ -2,15 +2,14 @@ package org.semanticweb.fbench.evaluation;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-import org.openrdf.repository.sail.SailRepository;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.misc.FileUtil;
 import org.semanticweb.fbench.query.Query;
 import org.semanticweb.fbench.report.SparqlQueryRequestReport;
 
-import com.fluidops.fedx.FedX;
 import com.fluidops.fedx.FedXFactory;
 import com.fluidops.fedx.FederationManager;
 import com.fluidops.fedx.structures.Endpoint;
@@ -18,6 +17,8 @@ import com.fluidops.fedx.structures.Endpoint;
 
 public class FedXSparqlEvaluation extends SesameSparqlEvaluation{
 
+	private FedXMonitoringReport fedxReport = null;
+	
 	public FedXSparqlEvaluation() {
 		super();
 	}
@@ -26,10 +27,15 @@ public class FedXSparqlEvaluation extends SesameSparqlEvaluation{
 	public void initialize() throws Exception {
 		log.info("Performing Sesame-Extension Initialization...");
 		
+		com.fluidops.fedx.Config.initialize(Config.getConfig().getProperty("fedxConfig"));
+		
 		File dataConfig = FileUtil.getFileLocation( Config.getConfig().getDataConfig() );
 		List<Endpoint> endpoints = DataConfigReader.loadFederationMembers(dataConfig, report);
 		
-		com.fluidops.fedx.Config.initialize(Config.getConfig().getProperty("fedxConfig"));
+		if (Boolean.parseBoolean(Config.getConfig().getProperty("fedxRequestReport", "false"))) {
+			com.fluidops.fedx.Config.getConfig().set("enableMonitoring", "true");
+			fedxReport = new FedXMonitoringReport(endpoints);
+		}
 		
 		sailRepo = FedXFactory.initializeFederation(endpoints);
 		if (!Config.getConfig().isFill())
@@ -45,7 +51,7 @@ public class FedXSparqlEvaluation extends SesameSparqlEvaluation{
 			sparqlReport = new SparqlQueryRequestReport();
 			sparqlReport.init(repoInformation);
 		}
-		
+				
 		reinitializeSystem();
 				
 		log.info("Sesame Repository successfully initialized.");
@@ -69,11 +75,6 @@ public class FedXSparqlEvaluation extends SesameSparqlEvaluation{
 			runningServers=0;
 		}
 		
-//		log.info("Trying to close connection: " + conn.getClass().getCanonicalName() + " (" + conn.getSailConnection().getClass() + ")");
-//		boolean _closed = Utils.closeConnectionTimeout(conn, 10000);
-//		log.info( _closed ? "Connection closed successfully." : "Error closing connection, timeout occured.");
-		
-//		sailRepo.shutDown();
 		
 		log.info("Deleting possible locks in the file system.");
 		for (RepoInformation r : repoInformation) {
@@ -121,6 +122,22 @@ public class FedXSparqlEvaluation extends SesameSparqlEvaluation{
 	@Override
 	public void finish() throws Exception {
 		FederationManager.getInstance().getCache().persist();
+		if (fedxReport!=null)
+			fedxReport.finish();
 		super.finish();
 	}
+
+	@Override
+	protected void queryRunEnd(Query query, boolean error)
+	{
+		if (fedxReport!=null)
+			try	{
+				fedxReport.handleQuery(query);
+			} catch (IOException e)	{
+				throw new RuntimeException(e);
+			}
+		super.queryRunEnd(query, error);
+	}
+	
+	
 }
