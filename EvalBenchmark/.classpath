@@ -14,7 +14,6 @@
 	<classpathentry kind="lib" path="lib/commons/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/lucene/lucene-core-3.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons/commons-compress-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/sesame/openrdf-alibaba-2.0-beta3.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-http-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-io-7.3.0.v20110203.jar"/>
 	<classpathentry kind="lib" path="lib/jetty7/jetty-security-7.3.0.v20110203.jar"/>
@@ -31,8 +30,8 @@
 	<classpathentry kind="lib" path="lib/splendid/SPLENDID.jar"/>
 	<classpathentry kind="lib" path="lib/bridge/FedBench-DARQ-bridge.jar"/>
 	<classpathentry kind="lib" path="lib/bridge/FedBench-SPLENDID-bridge.jar"/>
-	<classpathentry kind="lib" path="lib/sesame/openrdf-sesame-2.6.5-onejar.jar"/>
-	<classpathentry kind="lib" path="lib/fedx/fedx-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/bridge/FedBench-FedX-bridge.jar"/>
+	<classpathentry kind="lib" path="lib/commons/commons-io-2.1.jar"/>
+	<classpathentry kind="lib" path="lib/sesame/openrdf-sesame-2.7.3-onejar.jar"/>
+	<classpathentry kind="lib" path="lib/commons/jackson-core-2.1.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
