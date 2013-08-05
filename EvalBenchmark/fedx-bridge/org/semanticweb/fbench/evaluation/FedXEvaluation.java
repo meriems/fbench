@@ -4,12 +4,10 @@ package org.semanticweb.fbench.evaluation;
 import java.io.File;
 import java.util.List;
 
-import org.openrdf.repository.sail.SailRepository;
 import org.semanticweb.fbench.Config;
 import org.semanticweb.fbench.misc.FileUtil;
 import org.semanticweb.fbench.query.Query;
 
-import com.fluidops.fedx.FedX;
 import com.fluidops.fedx.FedXFactory;
 import com.fluidops.fedx.FederationManager;
 import com.fluidops.fedx.structures.Endpoint;
