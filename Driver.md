@@ -1,0 +1,7 @@
+# Benchmark Driver #
+
+In order to help potential users executing the benchmark in a standardized way, we have implemented a generic Java benchmark driver in Open Source. The driver provides an integrated execution engine for different benchmark scenarios and is highly congurable and customizable. Using the Sesame API as a mediator, it offers support for local repositories, SPARQL endpoints, federation, and Linked Data. New systems that are not using the Sesame API can easily be integrated by implementing the generic Sesame interfaces.
+
+The driver comes with predefined configurations for the benchmark scenarios that will be discussed in our experimental results. Custom scenarios can be created intuitively by writing config files that define properties for data configuration (i.e., repository setup) and various benchmark settings (number of runs, timeout, output mediator, etc). To standardize the format of the outcome, the driver ships two default mediators for writing results into CSV format as well as RDF triples. For the latter we have implemented an [Information Workbench](http://iwb.fluidops.com/) module that visualizes benchmark results automatically.
+
+The driver can be downloaded [here](http://code.google.com/p/fbench/downloads/list).
